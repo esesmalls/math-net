@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#cbb98e">
+  <title>Codex Infinitum · A Mathematical Manuscript</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="fluid" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+  <div class="folio-underlay" aria-hidden="true">
+    <span class="folio-note fn-1">Prop. VII<br>Let AB = BC<br>∴ △ABC is isosceles</span>
+    <span class="folio-note fn-2">∫<sub>0</sub><sup>∞</sup> e<sup>−x²</sup> dx = √π / 2</span>
+    <span class="folio-note fn-3">Omnia in numero<br>et mensura disposita sunt.</span>
+    <span class="folio-note fn-4">a² + b² = c²<br>quod erat demonstrandum</span>
+    <span class="folio-note fn-5">d/dt ∮<sub>C</sub> p dq = 0</span>
+    <div class="geometry-sketch"><i></i><i></i><i></i><b></b><span>A</span><span>B</span><span>C</span></div>
+  </div>
+  <div class="cursor-orbit" aria-hidden="true"><span></span></div>
+
+  <header class="nav">
+    <a class="sigil magnetic" href="#top" aria-label="Back to top">
+      <span>∮</span>
+      <i>∞</i>
+    </a>
+    <nav>
+      <a href="#axiom">AXIOMA</a>
+      <a href="#fields">STUDIA</a>
+      <a href="#notes">FOLIA</a>
+    </nav>
+    <div class="nav-index"><span>INDEX</span><b>0.001</b></div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="coordinate-grid" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <p class="eyebrow reveal">CODEX PRIVATUS · FOLIO I · MMXXVI</p>
+        <h1 class="hero-title" aria-label="The Shape of Infinity">
+          <span class="line reveal"><em>The</em> Shape of</span>
+          <span class="line offset reveal"><span class="outline">Infinity</span></span>
+        </h1>
+        <div class="hero-foot reveal">
+          <p>De numeris, spatiis, motibus et pulchritudine.<br>A private inquiry into forms unseen.</p>
+          <a class="round-link magnetic" href="#axiom"><span>OPEN<br>FOLIO</span><i>↘</i></a>
+        </div>
+      </div>
+
+      <div class="hero-formula formula-a" aria-hidden="true">e<sup>iπ</sup> + 1 = 0</div>
+      <div class="hero-formula formula-b" aria-hidden="true">lim<sub>x→∞</sub> f(x)</div>
+      <div class="hero-formula formula-c" aria-hidden="true">∇ × F = 0</div>
+      <div class="orbital-system" aria-hidden="true">
+        <div class="orbit orbit-1"><i></i></div>
+        <div class="orbit orbit-2"><i></i></div>
+        <div class="orbit orbit-3"><i></i></div>
+        <span class="orbital-label">ζ(s)</span>
+      </div>
+      <div class="scroll-mark"><span>TURN THE FOLIO</span><i></i></div>
+    </section>
+
+    <section class="manifesto" id="axiom">
+      <div class="section-label">
+        <span>01</span>
+        <p>AXIOMA<br>DE IMAGINATIONE</p>
+      </div>
+      <div class="manifesto-body">
+        <p class="kicker">“Mathematics is the art of giving<br>visible form to the unseen.”</p>
+        <div class="axiom-layout">
+          <div class="axiom-mark" aria-hidden="true">∀</div>
+          <h2 class="split-text">Every elegant proof begins as a dangerous act of imagination.</h2>
+        </div>
+        <div class="axiom-meta">
+          <p>Marginalia</p>
+          <ul>
+            <li><span>01</span> Topologia</li>
+            <li><span>02</span> Systemata Dynamica</li>
+            <li><span>03</span> Numerorum Mysteria</li>
+          </ul>
+          <div class="ratio" aria-label="Golden ratio diagram">
+            <span>1</span><i></i><span>φ</span><i></i><span>φ²</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="fields" id="fields">
+      <div class="section-label">
+        <span>02</span>
+        <p>STUDIA MATHEMATICA<br>SIX WORKING FOLIOS</p>
+      </div>
+      <div class="field-index">
+        <span>I · Topologia</span><span>II · Numeri</span><span>III · Analysis Complexa</span>
+        <span>IV · Geometria</span><span>V · Graphorum</span><span>VI · Harmonica</span>
+      </div>
+    </section>
+
+    <section class="domain-page domain-topology">
+      <canvas class="domain-canvas" data-domain="topology" aria-label="Animated topological surface"></canvas>
+      <div class="domain-copy">
+        <span class="folio-number">FOLIO · I</span>
+        <p class="domain-kicker">De forma sub mutatione</p>
+        <h2>Topologia</h2>
+        <p class="domain-text">A surface may bend, stretch, and pass through strange disguises. Its invariant remains.</p>
+        <div class="domain-equation">χ(M) = V − E + F</div>
+      </div>
+      <aside class="proof-note">Lemma.<br>If f : X → Y is continuous,<br>then the image of every<br>connected set is connected.</aside>
+    </section>
+
+    <section class="domain-page domain-number">
+      <canvas class="domain-canvas" data-domain="number" aria-label="Animated prime number spiral"></canvas>
+      <div class="domain-copy">
+        <span class="folio-number">FOLIO · II</span>
+        <p class="domain-kicker">De ordine occulto</p>
+        <h2>Numerorum<br>Theoria</h2>
+        <p class="domain-text">The primes appear alone, yet their silences arrange themselves into unexpected constellations.</p>
+        <div class="domain-equation">ζ(s) = ∑<sub>n=1</sub><sup>∞</sup> n<sup>−s</sup> = ∏<sub>p</sub>(1 − p<sup>−s</sup>)<sup>−1</sup></div>
+      </div>
+      <aside class="proof-note">Observe the diagonal<br>families in the spiral.<br>Are they accident<br>or arithmetic memory?</aside>
+    </section>
+
+    <section class="domain-page domain-complex">
+      <canvas class="domain-canvas" data-domain="complex" aria-label="Animated complex function field"></canvas>
+      <div class="domain-copy">
+        <span class="folio-number">FOLIO · III</span>
+        <p class="domain-kicker">De functionibus analyticis</p>
+        <h2>Analysis<br>Complexa</h2>
+        <p class="domain-text">On the complex plane, multiplication becomes rotation and every holomorphic function bends a field of angles.</p>
+        <div class="domain-equation">f(z) = z³ − 1 &nbsp; · &nbsp; ∮<sub>γ</sub> f(z) dz = 0</div>
+      </div>
+      <aside class="proof-note">Argument is direction.<br>Modulus is distance.<br>Together they reveal<br>the unseen mapping.</aside>
+    </section>
+
+    <section class="domain-page domain-geometry">
+      <canvas class="domain-canvas" data-domain="geometry" aria-label="Animated differential geometry grid"></canvas>
+      <div class="domain-copy">
+        <span class="folio-number">FOLIO · IV</span>
+        <p class="domain-kicker">De curvatura spatii</p>
+        <h2>Geometria<br>Differentialis</h2>
+        <p class="domain-text">The shortest path is not always straight. Curvature writes its own instructions into space.</p>
+        <div class="domain-equation">ds² = g<sub>ij</sub> dx<sup>i</sup>dx<sup>j</sup> &nbsp; · &nbsp; K = det(S)</div>
+      </div>
+      <aside class="proof-note">A geodesic obeys<br>∇<sub>γ̇</sub> γ̇ = 0.<br>It carries its direction<br>without turning.</aside>
+    </section>
+
+    <section class="domain-page domain-graph">
+      <canvas class="domain-canvas" data-domain="graph" aria-label="Animated graph network"></canvas>
+      <div class="domain-copy">
+        <span class="folio-number">FOLIO · V</span>
+        <p class="domain-kicker">De relationibus</p>
+        <h2>Theoria<br>Graphorum</h2>
+        <p class="domain-text">Erase distance and preserve relation: the world becomes vertices, edges, paths, and impossible crossings.</p>
+        <div class="domain-equation">G = (V, E) &nbsp; · &nbsp; ∑<sub>v∈V</sub> deg(v) = 2|E|</div>
+      </div>
+      <aside class="proof-note">Seven bridges.<br>Four odd vertices.<br>No Eulerian circuit.<br>Q.E.D.</aside>
+    </section>
+
+    <section class="domain-page domain-harmonic">
+      <canvas class="domain-canvas" data-domain="harmonic" aria-label="Animated Fourier epicycles"></canvas>
+      <div class="domain-copy">
+        <span class="folio-number">FOLIO · VI</span>
+        <p class="domain-kicker">De compositione undarum</p>
+        <h2>Analysis<br>Harmonica</h2>
+        <p class="domain-text">A complicated gesture may be reconstructed from simple circles, each turning at its own frequency.</p>
+        <div class="domain-equation">f(x) = a<sub>0</sub> + ∑<sub>n=1</sub><sup>∞</sup>(a<sub>n</sub> cos nx + b<sub>n</sub> sin nx)</div>
+      </div>
+      <aside class="proof-note">The line remembers<br>every circle that<br>conspired to draw it.</aside>
+    </section>
+
+    <section class="interlude">
+      <div class="marquee" aria-hidden="true">
+        <div>ORDER · CHAOS · PROOF · DOUBT · INFINITY · ORDER · CHAOS · PROOF · DOUBT · INFINITY ·&nbsp;</div>
+        <div>ORDER · CHAOS · PROOF · DOUBT · INFINITY · ORDER · CHAOS · PROOF · DOUBT · INFINITY ·&nbsp;</div>
+      </div>
+      <div class="attractor-wrap">
+        <canvas id="attractor" aria-label="Animated Lorenz attractor"></canvas>
+        <div class="attractor-copy">
+          <span>DE MOTU ET TURBULENTIA</span>
+          <h2>Certainty<br>breeds mystery.</h2>
+          <p>Move the hand; disturb the orbit.<br>Observation alters the figure.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="notes" id="notes">
+      <div class="section-label">
+        <span>03</span>
+        <p>FOLIA RECENTIA<br>UNFINISHED NOTES</p>
+      </div>
+      <div class="notes-content">
+        <div class="notes-heading">
+          <p>Cogitationes imperfectae</p>
+          <h2>Notes in the<br><i>margin</i></h2>
+        </div>
+        <div class="note-stack">
+          <article class="note-paper">
+            <span class="note-no">M–014</span>
+            <time>2026.04.12</time>
+            <h3>Why does eternity so often appear as a circle?</h3>
+            <p>A circle is not a shape, but an action: departure from a centre without ever abandoning it.</p>
+            <div class="scribble" aria-hidden="true">○ ⟶ ∞</div>
+          </article>
+          <article class="note-paper">
+            <span class="note-no">M–015</span>
+            <time>2026.05.03</time>
+            <h3>On the vertigo felt at the end of a proof</h3>
+            <p>When every step closes, logic ceases to be a road and becomes a landscape seen from above.</p>
+            <div class="scribble" aria-hidden="true">Q.E.D.</div>
+          </article>
+          <article class="note-paper">
+            <span class="note-no">M–016</span>
+            <time>2026.06.10</time>
+            <h3>Chaos is not disorder, but an excess of information</h3>
+            <p>What we name random may simply refuse to be compressed into a smaller language.</p>
+            <div class="scribble" aria-hidden="true">δ → ∞</div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-symbol">∴</div>
+    <p>Calculamus. Miramur.</p>
+    <div class="footer-meta"><span>FOLIO CONTINUES</span><span>© MMXXVI</span></div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
