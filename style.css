@@ -272,6 +272,7 @@ main, footer { position: relative; z-index: 2; }
 .result-node:hover, .result-node:focus-visible { color: var(--red-ink); transform: translateX(8px); outline: none; }
 .portal-return {
   position: absolute;
+  z-index: 3;
   right: 25px;
   top: 25px;
   width: 150px;
