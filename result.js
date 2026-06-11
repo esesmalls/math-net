@@ -69,7 +69,7 @@
   const ctx = canvas.getContext("2d");
   let width = 0;
   let height = 0;
-  let mode = "systema";
+  let mode = "singularis";
   let visible = true;
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -213,57 +213,28 @@
     ctx.stroke();
   }
 
-  function drawKakeyaSingular(time) {
-    const cx = width * .63;
-    const cy = height * .5;
-    const scale = Math.min(width, height) * .34;
-    ctx.save();
-    for (let layer = 0; layer < 4; layer++) {
-      const shrink = 1 - layer * .18;
-      for (let i = 0; i < 46; i++) {
-        const a = i / 46 * Math.PI + time * .00012 * (layer % 2 ? -1 : 1);
-        const offset = Math.sin(i * 11.7 + layer) * scale * .22 * shrink;
-        const dx = Math.cos(a) * scale * shrink;
-        const dy = Math.sin(a) * scale * shrink;
-        ctx.strokeStyle = layer === 0 ? "rgba(124,52,36,.26)" : `rgba(54,38,23,${.2 - layer * .03})`;
-        ctx.lineWidth = Math.max(.45, 1.2 - layer * .2);
-        ctx.beginPath();
-        ctx.moveTo(cx - dx + Math.cos(a + Math.PI / 2) * offset, cy - dy + Math.sin(a + Math.PI / 2) * offset);
-        ctx.lineTo(cx + dx + Math.cos(a + Math.PI / 2) * offset, cy + dy + Math.sin(a + Math.PI / 2) * offset);
-        ctx.stroke();
-      }
-    }
-    ctx.strokeStyle = "rgba(124,52,36,.65)";
-    ctx.setLineDash([5, 8]);
-    for (let r = .2; r <= 1; r += .2) {
-      ctx.beginPath(); ctx.arc(cx, cy, scale * r, 0, Math.PI * 2); ctx.stroke();
-    }
-    ctx.restore();
-  }
-
   const drawers = { topology: drawTopology, number: drawNumber, complex: drawComplex, geometry: drawGeometry, graph: drawGraph, harmonic: drawHarmonic };
   const seed = [...result.slug].reduce((sum, char) => sum + char.charCodeAt(0), 0) % 31;
+  const singularDrawer = window.SINGULARIS_DRAWERS && window.SINGULARIS_DRAWERS[result.visual.motif];
 
   function frame(time) {
     if (visible) {
       ctx.clearRect(0, 0, width, height);
-      if (result.slug === "three-dimensional-kakeya" && mode === "singularis") drawKakeyaSingular(time);
+      if (mode === "singularis" && singularDrawer) singularDrawer({ ctx, width, height }, time, seed, result);
       else drawers[result.domain](time, seed);
     }
     if (!reduceMotion) requestAnimationFrame(frame);
   }
 
-  if (result.visual.custom) {
-    const toggle = $("#visual-toggle");
-    toggle.hidden = false;
-    toggle.addEventListener("click", (event) => {
-      const button = event.target.closest("button[data-mode]");
-      if (!button) return;
-      mode = button.dataset.mode;
-      [...toggle.querySelectorAll("button")].forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
-      if (reduceMotion) frame(0);
-    });
-  }
+  const toggle = $("#visual-toggle");
+  toggle.hidden = false;
+  toggle.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-mode]");
+    if (!button) return;
+    mode = button.dataset.mode;
+    [...toggle.querySelectorAll("button")].forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+    if (reduceMotion) frame(0);
+  });
 
   new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }).observe(canvas);
   addEventListener("resize", resize);

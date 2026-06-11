@@ -15,7 +15,9 @@ classical mathematical typesetting.
   - Harmonic analysis
 - Responsive desktop and mobile layouts
 - Six result portals per field: three recent breakthroughs and three historical results
+- Paired animated field operators: each entrance has a mathematically inverse return operator
 - Shareable data-driven result folios with theorem statements, proof routes and sources
+- A dedicated `Singularis` animation for every result, shown by default with `Systema` available for comparison
 - Local-only PDF submission and review Archivum backed by IndexedDB
 - Zero dependencies and no build step
 

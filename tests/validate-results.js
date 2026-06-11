@@ -4,8 +4,10 @@ const vm = require("vm");
 const context = { window: {} };
 vm.createContext(context);
 vm.runInContext(fs.readFileSync("results-data.js", "utf8"), context);
+vm.runInContext(fs.readFileSync("singularis.js", "utf8"), context);
 
 const { results, domains, bySlug, byDomain, reviewed } = context.window.MATH_NET;
+const singularis = context.window.SINGULARIS_DRAWERS;
 const errors = [];
 const required = ["slug", "domain", "era", "title", "latinTitle", "authors", "year", "status", "theorem", "symbols", "formula", "proof", "significance", "reviewed", "sources"];
 
@@ -26,6 +28,22 @@ for (const item of results) {
   if (!Array.isArray(item.sources) || item.sources.length < 2) errors.push(`${item.slug} needs at least 2 sources.`);
   for (const entry of item.sources || []) {
     try { new URL(entry.url); } catch { errors.push(`${item.slug} has invalid source URL: ${entry.url}`); }
+  }
+  if (!item.visual || typeof singularis[item.visual.motif] !== "function") errors.push(`${item.slug} has no Singularis drawer.`);
+}
+
+const mockContext = new Proxy({
+  beginPath() {}, moveTo() {}, lineTo() {}, stroke() {}, fill() {}, arc() {}, ellipse() {},
+  closePath() {}, setLineDash() {}, fillText() {}, save() {}, restore() {}, translate() {}
+}, { set(target, key, value) { target[key] = value; return true; } });
+
+for (const item of results) {
+  if (!item.visual || typeof singularis[item.visual.motif] !== "function") continue;
+  try {
+    singularis[item.visual.motif]({ ctx: mockContext, width: 1280, height: 720 }, 1500, 7, item);
+    singularis[item.visual.motif]({ ctx: mockContext, width: 390, height: 844 }, 0, 7, item);
+  } catch (error) {
+    errors.push(`${item.slug} Singularis drawer failed: ${error.message}`);
   }
 }
 
