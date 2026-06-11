@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#cbb98e">
+  <title>Codex Infinitum · Result Folio</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="result.css">
+</head>
+<body class="result-body">
+  <div class="grain" aria-hidden="true"></div>
+  <div class="folio-underlay" aria-hidden="true">
+    <span class="folio-note fn-1">Hypothesis → Lemma → Theorem</span>
+    <span class="folio-note fn-2">∫<sub>0</sub><sup>∞</sup> e<sup>−x²</sup> dx = √π / 2</span>
+    <span class="folio-note fn-4">quod erat demonstrandum</span>
+    <div class="geometry-sketch"><i></i><i></i><i></i><b></b><span>A</span><span>B</span><span>C</span></div>
+  </div>
+
+  <header class="nav result-nav">
+    <a class="sigil" href="index.html#top" aria-label="Back to manuscript"><span>∮</span><i>∞</i></a>
+    <nav>
+      <a id="domain-back" href="index.html#fields">INVERSA</a>
+      <a href="#theorem">THEOREMA</a>
+      <a href="#sources">FONTES</a>
+    </nav>
+    <div class="nav-index"><span>RESULT FOLIO</span><b id="result-index">—</b></div>
+  </header>
+
+  <main class="result-main">
+    <section class="result-hero">
+      <canvas id="result-canvas" aria-label="Animated mathematical result diagram"></canvas>
+      <div class="result-hero-copy">
+        <span id="result-era" class="folio-number">—</span>
+        <p id="result-latin" class="domain-kicker">Loading folio…</p>
+        <h1 id="result-title">Result Folio</h1>
+        <p id="result-meta" class="result-meta"></p>
+        <div id="result-formula" class="result-formula" aria-label="Core formula"></div>
+        <div id="visual-toggle" class="visual-toggle" hidden>
+          <button type="button" data-mode="systema" aria-pressed="true">SYSTEMA</button>
+          <button type="button" data-mode="singularis" aria-pressed="false">SINGULARIS</button>
+        </div>
+      </div>
+      <aside class="result-review-date">Research material reviewed through<br><b>2026-06-11</b></aside>
+    </section>
+
+    <section class="result-content" id="theorem">
+      <div class="result-section-label"><span>I</span><p>ENUNTIATIO<br>THEOREM STATEMENT</p></div>
+      <article class="result-paper theorem-paper">
+        <h2>Precise statement</h2>
+        <p id="result-theorem"></p>
+        <h3>Notation</h3>
+        <p id="result-symbols"></p>
+      </article>
+    </section>
+
+    <section class="result-content">
+      <div class="result-section-label"><span>II</span><p>VIA PROBATIONIS<br>PROOF ROUTE</p></div>
+      <ol id="result-proof" class="proof-route"></ol>
+    </section>
+
+    <section class="result-content">
+      <div class="result-section-label"><span>III</span><p>CONSEQUENTIA<br>SIGNIFICANCE</p></div>
+      <article class="result-paper significance-paper">
+        <p id="result-significance"></p>
+      </article>
+    </section>
+
+    <section class="result-content" id="sources">
+      <div class="result-section-label"><span>IV</span><p>FONTES<br>TRACEABLE SOURCES</p></div>
+      <div id="result-sources" class="source-list"></div>
+    </section>
+
+    <section id="result-error" class="result-error" hidden>
+      <span>∅</span>
+      <h1>Folio non inventum</h1>
+      <p>The requested result does not exist in this manuscript.</p>
+      <a href="index.html#fields">Return to Studia</a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-symbol">∎</div>
+    <p id="footer-result-name">Quod erat demonstrandum.</p>
+    <div class="footer-meta"><a id="footer-back" href="index.html#fields">INVERSE PASSAGE</a><span>© MMXXVI</span></div>
+  </footer>
+
+  <script src="results-data.js"></script>
+  <script src="result.js"></script>
+</body>
+</html>

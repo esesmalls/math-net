@@ -1,5 +1,6 @@
 const $ = (selector, parent = document) => parent.querySelector(selector);
 const $$ = (selector, parent = document) => [...parent.querySelectorAll(selector)];
+const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const mouse = { x: innerWidth * 0.6, y: innerHeight * 0.45, px: innerWidth * 0.6, py: innerHeight * 0.45 };
 const cursor = $(".cursor-orbit");
@@ -120,7 +121,7 @@ function renderFluid(time) {
     particle.draw();
   });
   fctx.globalCompositeOperation = "source-over";
-  requestAnimationFrame(renderFluid);
+  if (!prefersReducedMotion) requestAnimationFrame(renderFluid);
 }
 resizeFluid();
 requestAnimationFrame(renderFluid);
@@ -156,7 +157,7 @@ function stepLorenz() {
 }
 
 function renderAttractor() {
-  for (let i = 0; i < 7; i++) stepLorenz();
+  for (let i = 0; i < (prefersReducedMotion ? 700 : 7); i++) stepLorenz();
   actx.clearRect(0, 0, aw, ah);
   actx.save();
   actx.translate(aw / 2, ah / 2);
@@ -179,7 +180,7 @@ function renderAttractor() {
   actx.lineWidth = 0.8;
   actx.stroke();
   actx.restore();
-  requestAnimationFrame(renderAttractor);
+  if (!prefersReducedMotion) requestAnimationFrame(renderAttractor);
 }
 resizeAttractor();
 requestAnimationFrame(renderAttractor);
@@ -440,13 +441,16 @@ function renderDomainScenes(time) {
     scene.ctx.clearRect(0, 0, scene.width, scene.height);
     domainDrawers[scene.type](scene, time);
   });
-  requestAnimationFrame(renderDomainScenes);
+  if (!prefersReducedMotion) requestAnimationFrame(renderDomainScenes);
 }
 
 const domainVisibility = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     const scene = domainScenes.find((item) => item.canvas === entry.target);
-    if (scene) scene.visible = entry.isIntersecting;
+    if (scene) {
+      scene.visible = entry.isIntersecting;
+      if (prefersReducedMotion && scene.visible) renderDomainScenes(0);
+    }
   });
 }, { rootMargin: "20% 0px" });
 

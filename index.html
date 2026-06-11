@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#cbb98e">
   <title>Codex Infinitum · A Mathematical Manuscript</title>
+  <link rel="icon" href="data:,">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -91,12 +92,12 @@
         <p>STUDIA MATHEMATICA<br>SIX WORKING FOLIOS</p>
       </div>
       <div class="field-index">
-        <span>I · Topologia</span><span>II · Numeri</span><span>III · Analysis Complexa</span>
-        <span>IV · Geometria</span><span>V · Graphorum</span><span>VI · Harmonica</span>
+        <a href="#topology">I · Topologia</a><a href="#number">II · Numeri</a><a href="#complex">III · Analysis Complexa</a>
+        <a href="#geometry">IV · Geometria</a><a href="#graph">V · Graphorum</a><a href="#harmonic">VI · Harmonica</a>
       </div>
     </section>
 
-    <section class="domain-page domain-topology">
+    <section class="domain-page domain-topology" id="topology" data-domain="topology">
       <canvas class="domain-canvas" data-domain="topology" aria-label="Animated topological surface"></canvas>
       <div class="domain-copy">
         <span class="folio-number">FOLIO · I</span>
@@ -108,7 +109,7 @@
       <aside class="proof-note">Lemma.<br>If f : X → Y is continuous,<br>then the image of every<br>connected set is connected.</aside>
     </section>
 
-    <section class="domain-page domain-number">
+    <section class="domain-page domain-number" id="number" data-domain="number">
       <canvas class="domain-canvas" data-domain="number" aria-label="Animated prime number spiral"></canvas>
       <div class="domain-copy">
         <span class="folio-number">FOLIO · II</span>
@@ -120,7 +121,7 @@
       <aside class="proof-note">Observe the diagonal<br>families in the spiral.<br>Are they accident<br>or arithmetic memory?</aside>
     </section>
 
-    <section class="domain-page domain-complex">
+    <section class="domain-page domain-complex" id="complex" data-domain="complex">
       <canvas class="domain-canvas" data-domain="complex" aria-label="Animated complex function field"></canvas>
       <div class="domain-copy">
         <span class="folio-number">FOLIO · III</span>
@@ -132,7 +133,7 @@
       <aside class="proof-note">Argument is direction.<br>Modulus is distance.<br>Together they reveal<br>the unseen mapping.</aside>
     </section>
 
-    <section class="domain-page domain-geometry">
+    <section class="domain-page domain-geometry" id="geometry" data-domain="geometry">
       <canvas class="domain-canvas" data-domain="geometry" aria-label="Animated differential geometry grid"></canvas>
       <div class="domain-copy">
         <span class="folio-number">FOLIO · IV</span>
@@ -144,7 +145,7 @@
       <aside class="proof-note">A geodesic obeys<br>∇<sub>γ̇</sub> γ̇ = 0.<br>It carries its direction<br>without turning.</aside>
     </section>
 
-    <section class="domain-page domain-graph">
+    <section class="domain-page domain-graph" id="graph" data-domain="graph">
       <canvas class="domain-canvas" data-domain="graph" aria-label="Animated graph network"></canvas>
       <div class="domain-copy">
         <span class="folio-number">FOLIO · V</span>
@@ -156,7 +157,7 @@
       <aside class="proof-note">Seven bridges.<br>Four odd vertices.<br>No Eulerian circuit.<br>Q.E.D.</aside>
     </section>
 
-    <section class="domain-page domain-harmonic">
+    <section class="domain-page domain-harmonic" id="harmonic" data-domain="harmonic">
       <canvas class="domain-canvas" data-domain="harmonic" aria-label="Animated Fourier epicycles"></canvas>
       <div class="domain-copy">
         <span class="folio-number">FOLIO · VI</span>
@@ -217,8 +218,62 @@
           </article>
         </div>
       </div>
+      <div class="submission-workbench">
+        <article class="submission-card">
+          <div class="submission-card-head">
+            <span>FOLIO SUBMISSION · LOCAL ONLY</span>
+            <button id="open-archivum" type="button">OPEN ARCHIVUM</button>
+          </div>
+          <h2>Write a discovery</h2>
+          <p class="storage-notice">This draft remains in this browser. It is never sent to the site owner.</p>
+          <form id="submission-form">
+            <label>Field
+              <select name="domain" required>
+                <option value="">Select a mathematical field</option>
+                <option value="topology">Topology</option>
+                <option value="number">Number Theory</option>
+                <option value="complex">Complex Analysis</option>
+                <option value="geometry">Differential Geometry</option>
+                <option value="graph">Graph Theory</option>
+                <option value="harmonic">Harmonic Analysis</option>
+              </select>
+            </label>
+            <label>Title<input name="title" type="text" maxlength="140" required></label>
+            <label>Descriptive summary<textarea name="summary" rows="4" maxlength="1200" required></textarea></label>
+            <div class="submission-two-col">
+              <label>Author <small>optional</small><input name="author" type="text" maxlength="100"></label>
+              <label>Email <small>optional</small><input name="email" type="email" maxlength="160"></label>
+            </div>
+            <label class="pdf-drop">Discovery PDF · maximum 20MB
+              <input name="pdf" type="file" accept="application/pdf,.pdf" required>
+              <span id="pdf-status">No folio attached.</span>
+            </label>
+            <button class="submit-discovery" type="submit">SEAL INTO LOCAL ARCHIVUM</button>
+            <p id="submission-status" role="status"></p>
+          </form>
+        </article>
+      </div>
     </section>
   </main>
+
+  <dialog id="archivum-dialog" class="archivum-dialog">
+    <div class="archivum-head">
+      <div><span>ARCHIVUM LOCALE</span><h2>Review desk</h2></div>
+      <button id="close-archivum" type="button" aria-label="Close review desk">×</button>
+    </div>
+    <p class="storage-notice">Records and PDFs are stored only in this browser's IndexedDB.</p>
+    <div class="archivum-controls">
+      <select id="archive-domain-filter" aria-label="Filter by field"><option value="">All fields</option></select>
+      <select id="archive-status-filter" aria-label="Filter by status">
+        <option value="">All statuses</option><option value="submitted">Submitted</option>
+        <option value="under-review">Under review</option><option value="accepted">Accepted</option><option value="rejected">Rejected</option>
+      </select>
+      <button id="export-archive" type="button">EXPORT REVIEW ZIP</button>
+      <label class="import-control">IMPORT REVIEW ZIP<input id="import-archive" type="file" accept=".zip,application/zip"></label>
+      <button id="export-publications" type="button">EXPORT ACCEPTED DRAFTS</button>
+    </div>
+    <div id="archive-list" class="archive-list"></div>
+  </dialog>
 
   <footer>
     <div class="footer-symbol">∴</div>
@@ -226,6 +281,9 @@
     <div class="footer-meta"><span>FOLIO CONTINUES</span><span>© MMXXVI</span></div>
   </footer>
 
+  <script src="results-data.js"></script>
   <script src="script.js"></script>
+  <script src="portals.js"></script>
+  <script src="submissions.js"></script>
 </body>
 </html>
