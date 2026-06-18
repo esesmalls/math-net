@@ -71,11 +71,14 @@
   let height = 0;
   let mode = "singularis";
   let visible = true;
+  let frameId = 0;
+  let lastFrame = 0;
+  let frameDelay = 0;
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function resize() {
     const rect = canvas.getBoundingClientRect();
-    const dpr = Math.min(devicePixelRatio || 1, 1.5);
+    const dpr = Math.min(devicePixelRatio || 1, innerWidth < 700 ? 1 : 1.5);
     width = rect.width;
     height = rect.height;
     canvas.width = Math.max(1, width * dpr);
@@ -217,13 +220,35 @@
   const seed = [...result.slug].reduce((sum, char) => sum + char.charCodeAt(0), 0) % 31;
   const singularDrawer = window.SINGULARIS_DRAWERS && window.SINGULARIS_DRAWERS[result.visual.motif];
 
-  function frame(time) {
-    if (visible) {
-      ctx.clearRect(0, 0, width, height);
-      if (mode === "singularis" && singularDrawer) singularDrawer({ ctx, width, height }, time, seed, result);
-      else drawers[result.domain](time, seed);
+  function drawFrame(time) {
+    ctx.clearRect(0, 0, width, height);
+    if (mode === "singularis" && singularDrawer) singularDrawer({ ctx, width, height }, time, seed, result);
+    else drawers[result.domain](time, seed);
+  }
+
+  function scheduleFrame() {
+    if (reduceMotion) {
+      drawFrame(0);
+      return;
     }
-    if (!reduceMotion) requestAnimationFrame(frame);
+    if (!visible || document.hidden || frameId || frameDelay) return;
+    const wait = Math.max(0, 33 - (performance.now() - lastFrame));
+    if (wait > 1) {
+      frameDelay = setTimeout(() => {
+        frameDelay = 0;
+        scheduleFrame();
+      }, wait);
+      return;
+    }
+    frameId = requestAnimationFrame(frame);
+  }
+
+  function frame(time) {
+    frameId = 0;
+    if (!visible || document.hidden) return;
+    lastFrame = time;
+    drawFrame(time);
+    scheduleFrame();
   }
 
   const toggle = $("#visual-toggle");
@@ -233,11 +258,24 @@
     if (!button) return;
     mode = button.dataset.mode;
     [...toggle.querySelectorAll("button")].forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
-    if (reduceMotion) frame(0);
+    drawFrame(performance.now());
+    scheduleFrame();
   });
 
-  new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }).observe(canvas);
-  addEventListener("resize", resize);
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    if (!visible && frameId) {
+      cancelAnimationFrame(frameId);
+      frameId = 0;
+    }
+    scheduleFrame();
+  }).observe(canvas);
+  addEventListener("resize", () => {
+    resize();
+    drawFrame(performance.now());
+    scheduleFrame();
+  });
+  document.addEventListener("visibilitychange", scheduleFrame);
   resize();
-  frame(reduceMotion ? 0 : performance.now());
+  scheduleFrame();
 }());

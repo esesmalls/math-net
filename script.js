@@ -1,28 +1,48 @@
 const $ = (selector, parent = document) => parent.querySelector(selector);
 const $$ = (selector, parent = document) => [...parent.querySelectorAll(selector)];
 const prefersReducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const finePointer = matchMedia("(pointer: fine)").matches;
+
+function canvasDpr(limit = 1.5) {
+  return Math.min(devicePixelRatio || 1, innerWidth < 700 ? 1 : limit);
+}
 
 const mouse = { x: innerWidth * 0.6, y: innerHeight * 0.45, px: innerWidth * 0.6, py: innerHeight * 0.45 };
 const cursor = $(".cursor-orbit");
+let cursorFrame = 0;
 
-window.addEventListener("pointermove", (event) => {
-  mouse.x = event.clientX;
-  mouse.y = event.clientY;
-});
+if (cursor && finePointer && !prefersReducedMotion) {
+  window.addEventListener("pointermove", (event) => {
+    mouse.x = event.clientX;
+    mouse.y = event.clientY;
+    scheduleCursor();
+  });
+} else if (cursor) {
+  cursor.style.display = "none";
+}
 
 function animateCursor() {
+  cursorFrame = 0;
   mouse.px += (mouse.x - mouse.px) * 0.12;
   mouse.py += (mouse.y - mouse.py) * 0.12;
   cursor.style.left = `${mouse.px}px`;
   cursor.style.top = `${mouse.py}px`;
-  requestAnimationFrame(animateCursor);
+  if (Math.hypot(mouse.x - mouse.px, mouse.y - mouse.py) > 0.2) scheduleCursor();
 }
-animateCursor();
 
-$$("a, .field-card, .note-paper").forEach((element) => {
-  element.addEventListener("pointerenter", () => cursor.classList.add("active"));
-  element.addEventListener("pointerleave", () => cursor.classList.remove("active"));
-});
+function scheduleCursor() {
+  if (cursor && finePointer && !prefersReducedMotion && !document.hidden && !cursorFrame) {
+    cursorFrame = requestAnimationFrame(animateCursor);
+  }
+}
+scheduleCursor();
+
+if (cursor && finePointer && !prefersReducedMotion) {
+  $$("a, .field-card, .note-paper").forEach((element) => {
+    element.addEventListener("pointerenter", () => cursor.classList.add("active"));
+    element.addEventListener("pointerleave", () => cursor.classList.remove("active"));
+  });
+}
 
 $$(".magnetic").forEach((element) => {
   element.addEventListener("pointermove", (event) => {
@@ -66,6 +86,9 @@ const fctx = fluid.getContext("2d", { alpha: true });
 let fw = 0;
 let fh = 0;
 let particles = [];
+let fluidFrame = 0;
+let fluidLast = 0;
+let fluidDelay = 0;
 
 class FluidParticle {
   constructor(index) {
@@ -102,7 +125,7 @@ class FluidParticle {
 }
 
 function resizeFluid() {
-  const dpr = Math.min(devicePixelRatio || 1, 1.5);
+  const dpr = canvasDpr(1.5);
   fw = innerWidth;
   fh = innerHeight;
   fluid.width = fw * dpr;
@@ -113,7 +136,7 @@ function resizeFluid() {
   particles = Array.from({ length: Math.min(34, Math.max(18, Math.floor(fw / 55))) }, (_, i) => new FluidParticle(i));
 }
 
-function renderFluid(time) {
+function drawFluid(time) {
   fctx.clearRect(0, 0, fw, fh);
   fctx.globalCompositeOperation = "multiply";
   particles.forEach((particle) => {
@@ -121,10 +144,30 @@ function renderFluid(time) {
     particle.draw();
   });
   fctx.globalCompositeOperation = "source-over";
-  if (!prefersReducedMotion) requestAnimationFrame(renderFluid);
+}
+
+function scheduleFluid() {
+  if (prefersReducedMotion || document.hidden || fluidFrame || fluidDelay) return;
+  const wait = Math.max(0, 33 - (performance.now() - fluidLast));
+  if (wait > 1) {
+    fluidDelay = setTimeout(() => {
+      fluidDelay = 0;
+      scheduleFluid();
+    }, wait);
+    return;
+  }
+  fluidFrame = requestAnimationFrame(renderFluid);
+}
+
+function renderFluid(time) {
+  fluidFrame = 0;
+  fluidLast = time;
+  drawFluid(time);
+  scheduleFluid();
 }
 resizeFluid();
-requestAnimationFrame(renderFluid);
+if (prefersReducedMotion) drawFluid(0);
+else scheduleFluid();
 
 const attractor = $("#attractor");
 const actx = attractor.getContext("2d");
@@ -132,10 +175,14 @@ let aw = 0;
 let ah = 0;
 let lorenzPoints = [];
 let lorenzState = { x: 0.1, y: 0, z: 0 };
+let attractorFrame = 0;
+let attractorLast = 0;
+let attractorDelay = 0;
+let attractorVisible = false;
 
 function resizeAttractor() {
   const rect = attractor.getBoundingClientRect();
-  const dpr = Math.min(devicePixelRatio || 1, 2);
+  const dpr = canvasDpr(1.5);
   aw = rect.width;
   ah = rect.height;
   attractor.width = aw * dpr;
@@ -156,13 +203,13 @@ function stepLorenz() {
   if (lorenzPoints.length > 2200) lorenzPoints.shift();
 }
 
-function renderAttractor() {
+function drawAttractor(time) {
   for (let i = 0; i < (prefersReducedMotion ? 700 : 7); i++) stepLorenz();
   actx.clearRect(0, 0, aw, ah);
   actx.save();
   actx.translate(aw / 2, ah / 2);
   const scale = Math.min(aw, ah) / 54;
-  const angle = performance.now() * 0.00004 + (mouse.x / innerWidth - 0.5) * 0.25;
+  const angle = time * 0.00004 + (mouse.x / innerWidth - 0.5) * 0.25;
   actx.rotate(angle * 0.18);
   actx.beginPath();
   lorenzPoints.forEach((point, index) => {
@@ -180,10 +227,33 @@ function renderAttractor() {
   actx.lineWidth = 0.8;
   actx.stroke();
   actx.restore();
-  if (!prefersReducedMotion) requestAnimationFrame(renderAttractor);
+}
+
+function scheduleAttractor() {
+  if (prefersReducedMotion || !attractorVisible || document.hidden || attractorFrame || attractorDelay) return;
+  const wait = Math.max(0, 33 - (performance.now() - attractorLast));
+  if (wait > 1) {
+    attractorDelay = setTimeout(() => {
+      attractorDelay = 0;
+      scheduleAttractor();
+    }, wait);
+    return;
+  }
+  attractorFrame = requestAnimationFrame(renderAttractor);
+}
+
+function renderAttractor(time) {
+  attractorFrame = 0;
+  attractorLast = time;
+  drawAttractor(time);
+  scheduleAttractor();
 }
 resizeAttractor();
-requestAnimationFrame(renderAttractor);
+new IntersectionObserver(([entry]) => {
+  attractorVisible = entry.isIntersecting;
+  if (prefersReducedMotion && attractorVisible) drawAttractor(0);
+  else scheduleAttractor();
+}, { rootMargin: "20% 0px" }).observe(attractor);
 
 const domainScenes = $$(".domain-canvas").map((canvas) => ({
   canvas,
@@ -194,10 +264,13 @@ const domainScenes = $$(".domain-canvas").map((canvas) => ({
   visible: false,
   frame: 0
 }));
+let domainFrame = 0;
+let domainLast = 0;
+let domainDelay = 0;
 
 function resizeDomainScene(scene) {
   const rect = scene.canvas.getBoundingClientRect();
-  const dpr = Math.min(devicePixelRatio || 1, 1.5);
+  const dpr = canvasDpr(1.5);
   scene.width = rect.width;
   scene.height = rect.height;
   scene.canvas.width = Math.max(1, rect.width * dpr);
@@ -433,7 +506,11 @@ const domainDrawers = {
   harmonic: drawHarmonic
 };
 
-function renderDomainScenes(time) {
+function anyDomainVisible() {
+  return domainScenes.some((scene) => scene.visible);
+}
+
+function drawDomainScenes(time) {
   domainScenes.forEach((scene) => {
     if (!scene.visible) return;
     scene.frame++;
@@ -441,7 +518,26 @@ function renderDomainScenes(time) {
     scene.ctx.clearRect(0, 0, scene.width, scene.height);
     domainDrawers[scene.type](scene, time);
   });
-  if (!prefersReducedMotion) requestAnimationFrame(renderDomainScenes);
+}
+
+function scheduleDomainScenes() {
+  if (prefersReducedMotion || !anyDomainVisible() || document.hidden || domainFrame || domainDelay) return;
+  const wait = Math.max(0, 33 - (performance.now() - domainLast));
+  if (wait > 1) {
+    domainDelay = setTimeout(() => {
+      domainDelay = 0;
+      scheduleDomainScenes();
+    }, wait);
+    return;
+  }
+  domainFrame = requestAnimationFrame(renderDomainScenes);
+}
+
+function renderDomainScenes(time) {
+  domainFrame = 0;
+  domainLast = time;
+  drawDomainScenes(time);
+  scheduleDomainScenes();
 }
 
 const domainVisibility = new IntersectionObserver((entries) => {
@@ -449,32 +545,54 @@ const domainVisibility = new IntersectionObserver((entries) => {
     const scene = domainScenes.find((item) => item.canvas === entry.target);
     if (scene) {
       scene.visible = entry.isIntersecting;
-      if (prefersReducedMotion && scene.visible) renderDomainScenes(0);
+      if (prefersReducedMotion && scene.visible) drawDomainScenes(0);
     }
   });
+  scheduleDomainScenes();
 }, { rootMargin: "20% 0px" });
 
 domainScenes.forEach((scene) => {
   resizeDomainScene(scene);
   domainVisibility.observe(scene.canvas);
 });
-requestAnimationFrame(renderDomainScenes);
+scheduleDomainScenes();
 
 let lastScroll = 0;
-function onScroll() {
-  const scrollY = window.scrollY;
+let scrollFrame = 0;
+let resizeFrame = 0;
+
+function applyScroll() {
+  scrollFrame = 0;
+  const scrollY = lastScroll;
   const progress = Math.min(1, scrollY / innerHeight);
   const title = $(".hero-title");
   title.style.transform = `translateY(${scrollY * 0.18}px) skewY(${Math.sin(progress * Math.PI) * -2.5}deg)`;
   $(".orbital-system").style.transform = `rotate(${scrollY * 0.04}deg) scale(${1 + progress * 0.25})`;
   $(".coordinate-grid").style.backgroundPositionY = `${scrollY * 0.08}px`;
-  lastScroll = scrollY;
+}
+
+function onScroll() {
+  lastScroll = window.scrollY;
+  if (!scrollFrame) scrollFrame = requestAnimationFrame(applyScroll);
 }
 window.addEventListener("scroll", onScroll, { passive: true });
 window.addEventListener("resize", () => {
-  resizeFluid();
-  resizeAttractor();
-  domainScenes.forEach(resizeDomainScene);
+  if (resizeFrame) return;
+  resizeFrame = requestAnimationFrame(() => {
+    resizeFrame = 0;
+    resizeFluid();
+    resizeAttractor();
+    domainScenes.forEach(resizeDomainScene);
+    drawFluid(performance.now());
+    if (attractorVisible) drawAttractor(performance.now());
+    if (anyDomainVisible()) drawDomainScenes(performance.now());
+  });
+});
+document.addEventListener("visibilitychange", () => {
+  scheduleCursor();
+  scheduleFluid();
+  scheduleAttractor();
+  scheduleDomainScenes();
 });
 
 const observer = new IntersectionObserver((entries) => {

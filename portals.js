@@ -53,7 +53,7 @@
       operators.forEach((other) => {
         if (other === item) return;
         clearTimeout(other.timer);
-        other.section.classList.remove("portal-open", "portal-transforming", "portal-inverting");
+        other.section.classList.remove("portal-open", "portal-opening", "portal-closing");
         other.enter.button.setAttribute("aria-expanded", "false");
         other.map.setAttribute("aria-hidden", "true");
         other.phase = "idle";
@@ -61,12 +61,14 @@
       clearTimeout(item.timer);
       item.phase = "opening";
       item.transitionStart = performance.now();
-      section.classList.add("portal-open", "portal-transforming");
+      section.classList.remove("portal-closing");
+      section.classList.add("portal-open", "portal-opening");
       enter.button.setAttribute("aria-expanded", "true");
       map.setAttribute("aria-hidden", "false");
+      scheduleFrame();
       item.timer = setTimeout(() => {
         item.phase = "open";
-        section.classList.remove("portal-transforming");
+        section.classList.remove("portal-opening");
         map.querySelector(".result-node")?.focus({ preventScroll: true });
       }, reduceMotion ? 1 : 720);
     }
@@ -75,11 +77,13 @@
       clearTimeout(item.timer);
       item.phase = "closing";
       item.transitionStart = performance.now();
-      section.classList.add("portal-transforming", "portal-inverting");
+      section.classList.remove("portal-open", "portal-opening");
+      section.classList.add("portal-closing");
+      enter.button.setAttribute("aria-expanded", "false");
+      map.setAttribute("aria-hidden", "true");
+      scheduleFrame();
       item.timer = setTimeout(() => {
-        section.classList.remove("portal-open", "portal-transforming", "portal-inverting");
-        enter.button.setAttribute("aria-expanded", "false");
-        map.setAttribute("aria-hidden", "true");
+        section.classList.remove("portal-closing");
         item.phase = "idle";
         enter.button.focus({ preventScroll: true });
       }, reduceMotion ? 1 : 780);
@@ -96,7 +100,7 @@
 
   function resizePart(part) {
     const rect = part.canvas.getBoundingClientRect();
-    const dpr = Math.min(devicePixelRatio || 1, 1.5);
+    const dpr = Math.min(devicePixelRatio || 1, innerWidth < 700 ? 1 : 1.5);
     part.width = rect.width;
     part.height = rect.height;
     part.canvas.width = Math.max(1, rect.width * dpr);
@@ -246,13 +250,20 @@
   }
 
   const drawers = { topology: drawTopology, number: drawNumber, complex: drawComplex, geometry: drawGeometry, graph: drawGraph, harmonic: drawHarmonic };
+  let frameId = 0;
+  let lastFrame = 0;
+  let frameDelay = 0;
 
   function resize(item) {
     resizePart(item.enter);
     resizePart(item.exit);
   }
 
-  function frame(time) {
+  function anyVisibleOperator() {
+    return operators.some((item) => item.visible);
+  }
+
+  function drawFrame(time) {
     operators.forEach((item) => {
       if (!item.visible) return;
       const elapsed = Math.min(1, Math.max(0, (time - item.transitionStart) / 720));
@@ -262,7 +273,30 @@
       drawers[item.key](item.enter, time, false, pulse);
       drawers[item.key](item.exit, time, true, pulse);
     });
-    if (!reduceMotion) requestAnimationFrame(frame);
+  }
+
+  function scheduleFrame() {
+    if (reduceMotion) {
+      drawFrame(0);
+      return;
+    }
+    if (frameId || frameDelay || document.hidden || !anyVisibleOperator()) return;
+    const wait = Math.max(0, 24 - (performance.now() - lastFrame));
+    if (wait > 1) {
+      frameDelay = setTimeout(() => {
+        frameDelay = 0;
+        scheduleFrame();
+      }, wait);
+      return;
+    }
+    frameId = requestAnimationFrame(frame);
+  }
+
+  function frame(time) {
+    frameId = 0;
+    lastFrame = time;
+    drawFrame(time);
+    scheduleFrame();
   }
 
   const observer = new IntersectionObserver((entries) => {
@@ -270,8 +304,13 @@
       const item = operators.find((candidate) => candidate.section === entry.target);
       if (item) item.visible = entry.isIntersecting;
     });
+    scheduleFrame();
   });
   operators.forEach((item) => { resize(item); observer.observe(item.section); });
-  addEventListener("resize", () => operators.forEach(resize));
-  frame(reduceMotion ? 0 : performance.now());
+  addEventListener("resize", () => {
+    operators.forEach(resize);
+    scheduleFrame();
+  });
+  document.addEventListener("visibilitychange", scheduleFrame);
+  scheduleFrame();
 }());
