@@ -59,6 +59,8 @@ for (const item of results) {
   }
   if (item.sources.some((entry) => entry.type === "primary-index")) errors.push(`${item.slug} still uses a search-index source placeholder.`);
   if (item.era === "recent" && !item.sources.some((entry) => ["preprint", "primary", "journal"].includes(entry.type))) errors.push(`${item.slug} lacks a direct primary-paper link.`);
+  if (item.era === "recent" && item.sourceChecked !== "2026-08-11") errors.push(`${item.slug} was not covered by the latest recent-results audit.`);
+  if (item.status === "published" && !item.sources.some((entry) => ["journal", "conference"].includes(entry.type))) errors.push(`${item.slug} is marked published without a formal publication record.`);
   if (!item.visual || typeof singularis[item.visual.motif] !== "function") errors.push(`${item.slug} has no Singularis drawer.`);
 }
 
@@ -80,7 +82,10 @@ for (const checkpoint of maintenance.checkpoints || []) {
   if ((checkpoint.slugs || []).some((slug) => !reviewSlugs.has(slug)) || reviewSlugs.size !== (checkpoint.slugs || []).length) errors.push(`Checkpoint review ledger does not match its declared scope: ${checkpoint.date}.`);
 }
 if (!(maintenance.checkpoints || []).some((checkpoint) => checkpoint.slugs.includes("furstenberg-set-conjecture"))) errors.push("Furstenberg status recheck is missing from the maintenance ledger.");
-if ((maintenance.checkpoints[0].evidence || []).length !== 4) errors.push("Latest maintenance checkpoint should retain four status-review notes.");
+if ((maintenance.checkpoints[0].evidence || []).length !== 11) errors.push("Latest maintenance checkpoint should retain eleven status-review notes.");
+if ((maintenance.checkpoints[0].reviews || []).length !== 18) errors.push("Latest maintenance checkpoint should cover all eighteen recent results.");
+if (bySlug["sle4-removability"].status !== "preprint" || bySlug["union-closed-lower-bound"].status !== "preprint") errors.push("Unsupported publication labels remain in the recent catalog.");
+if (!bySlug["kelley-meka-roth"].sources.some((entry) => entry.url.includes("2302.05537")) || !bySlug["kelley-meka-roth"].formula.includes("¹⁄¹²")) errors.push("Kelley-Meka primary paper or corrected exponent is missing.");
 
 const mockContext = new Proxy({
   beginPath() {}, moveTo() {}, lineTo() {}, stroke() {}, fill() {}, arc() {}, ellipse() {},

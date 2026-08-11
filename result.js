@@ -67,17 +67,27 @@
   });
 
   const sourceList = $("#result-sources");
+  const sourceRanks = {
+    journal: "I", conference: "I", primary: "I", preprint: "I",
+    institution: "II", "authoritative-survey": "II",
+    reference: "III", background: "III"
+  };
   result.sources.forEach((entry) => {
     const link = document.createElement("a");
     link.className = "source-card";
+    link.dataset.rank = sourceRanks[entry.type] || "III";
     link.href = entry.url;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     const type = document.createElement("span");
+    type.className = "source-type";
     type.textContent = entry.type.toUpperCase();
+    const rank = document.createElement("i");
+    rank.className = "source-rank";
+    rank.textContent = link.dataset.rank;
     const label = document.createElement("strong");
     label.textContent = entry.label;
-    link.append(type, label);
+    link.append(rank, type, label);
     sourceList.appendChild(link);
   });
 

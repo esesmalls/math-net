@@ -20,12 +20,14 @@
     checkpoints: [
       {
         date: "2026-08-11",
-        scope: "eleven direct-paper checks; seven search-index placeholders retired",
+        scope: "eighteen direct-paper and publication-status checks; seven search-index placeholders retired; one mismatched paper corrected",
         slugs: [
           "telescope-conjecture-counterexamples", "last-kervaire-invariant", "seifert-surfaces-four-ball",
-          "lqg-metric-uniqueness", "non-simple-sle-removability", "multiplicity-one-mean-curvature",
+          "symmetric-power-functoriality", "unbounded-denominators", "kelley-meka-roth",
+          "lqg-metric-uniqueness", "sle4-removability", "non-simple-sle-removability", "multiplicity-one-mean-curvature",
           "compact-bonnet-pairs", "positive-mass-stability", "three-dimensional-kakeya",
-          "furstenberg-set-conjecture", "restriction-estimates-r3"
+          "furstenberg-set-conjecture", "restriction-estimates-r3", "kahn-kalai-theorem",
+          "erdos-faber-lovasz", "union-closed-lower-bound"
         ],
         evidence: [
           {
@@ -47,6 +49,41 @@
             slug: "positive-mass-stability",
             url: "https://arxiv.org/abs/2302.07414",
             outcome: "v3 is marked to appear in Inventiones; accepted-preprint mark retained"
+          },
+          {
+            slug: "symmetric-power-functoriality",
+            url: "https://annals.math.princeton.edu/2026/203-1/p04",
+            outcome: "Annals volume 203 records publication in 2026; the theorem statement was expanded from the rational case to regular-weight Hilbert modular forms over totally real fields"
+          },
+          {
+            slug: "unbounded-denominators",
+            url: "https://doi.org/10.1090/jams/1053",
+            outcome: "JAMS volume 38 records publication in 2025; the canonical journal record and proof ingredients were added"
+          },
+          {
+            slug: "kelley-meka-roth",
+            url: "https://arxiv.org/abs/2302.05537",
+            outcome: "The original Kelley-Meka paper replaced a Bloom-Sisask exposition that had been mislabeled as the primary paper; the explicit exponent was corrected from 1/11 to 1/12"
+          },
+          {
+            slug: "sle4-removability",
+            url: "https://arxiv.org/abs/2209.10532",
+            outcome: "The arXiv record has no journal reference or acceptance note; status corrected from published to preprint"
+          },
+          {
+            slug: "kahn-kalai-theorem",
+            url: "https://doi.org/10.1090/jams/1028",
+            outcome: "The JAMS publication record was added and an unrelated Kelley-Meka background article was removed"
+          },
+          {
+            slug: "erdos-faber-lovasz",
+            url: "https://annals.math.princeton.edu/2023/198-2/p02",
+            outcome: "The Annals publication record and DOI were added"
+          },
+          {
+            slug: "union-closed-lower-bound",
+            url: "https://arxiv.org/abs/2211.09055",
+            outcome: "No journal record is present and later literature continues to cite the work as an arXiv preprint; status corrected from published to preprint and the 0.01 constant made explicit"
           }
         ],
         reviews: [
@@ -66,9 +103,29 @@
             changedFields: ["sources", "sourceChecked"]
           },
           {
+            slug: "symmetric-power-functoriality",
+            outcome: "Annals publication linked and the theorem statement generalized to the full Hilbert-modular formulation in the paper.",
+            changedFields: ["theorem", "symbols", "formula", "sources", "sourceChecked"]
+          },
+          {
+            slug: "unbounded-denominators",
+            outcome: "JAMS publication linked and the proof route aligned with the paper's stated ingredients.",
+            changedFields: ["year", "proof", "sources", "sourceChecked"]
+          },
+          {
+            slug: "kelley-meka-roth",
+            outcome: "Mislabeled exposition replaced by the original paper; formal publication and exposition retained separately; exponent corrected.",
+            changedFields: ["theorem", "formula", "sources", "sourceChecked"]
+          },
+          {
             slug: "lqg-metric-uniqueness",
             outcome: "Primary paper and published journal record reconciled; search-index placeholder retired.",
             changedFields: ["sources", "sourceChecked"]
+          },
+          {
+            slug: "sle4-removability",
+            outcome: "Publication status corrected to preprint after checking the current arXiv and author records.",
+            changedFields: ["status", "sourceChecked"]
           },
           {
             slug: "non-simple-sle-removability",
@@ -104,6 +161,21 @@
             slug: "restriction-estimates-r3",
             outcome: "Canonical arXiv paper linked directly; search-index placeholder retired.",
             changedFields: ["sources", "sourceChecked"]
+          },
+          {
+            slug: "kahn-kalai-theorem",
+            outcome: "JAMS record added and an unrelated background article removed.",
+            changedFields: ["year", "sources", "sourceChecked"]
+          },
+          {
+            slug: "erdos-faber-lovasz",
+            outcome: "Annals publication record added.",
+            changedFields: ["year", "sources", "sourceChecked"]
+          },
+          {
+            slug: "union-closed-lower-bound",
+            outcome: "Status corrected to preprint, authorship narrowed to the stated theorem, and the constant made explicit.",
+            changedFields: ["authors", "status", "theorem", "formula", "sources", "sourceChecked"]
           }
         ]
       }
@@ -282,29 +354,29 @@
       [source("Clay Mathematics Institute", "https://www.claymath.org/millennium/poincare-conjecture/", "institution")],
       { motif: "sphere", density: 6 }),
 
-    result("number", "recent", "symmetric-power-functoriality", "Symmetric Power Functoriality", "De potentiis symmetricis", "James Newton, Jack Thorne", "2022", "published",
-      "For every non-CM holomorphic cuspidal Hecke eigenform over the rationals, all symmetric power lifts are automorphic.",
-      "π: automorphic representation of GL₂; Symⁿπ: nth symmetric power lift.",
-      "Symⁿπ is automorphic on GLₙ₊₁  for every n ≥ 1",
+    result("number", "recent", "symmetric-power-functoriality", "Symmetric Power Functoriality", "De potentiis symmetricis", "James Newton, Jack Thorne", "2022 / 2026", "published",
+      "Let F be a totally real field and let π be a cuspidal automorphic representation of GL₂(𝔸_F) associated to a Hilbert modular form of regular weight. For every n ≥ 1, the symmetric power lift Symⁿπ exists as an automorphic representation of GLₙ₊₁(𝔸_F).",
+      "F: totally real field; 𝔸_F: its adèles; π: regular-weight Hilbert modular representation; Symⁿπ: nth symmetric power lift.",
+      "π on GL₂(𝔸_F)  ⇒  Symⁿπ automorphic on GLₙ₊₁(𝔸_F),  n ≥ 1",
       ["Construct congruences between automorphic representations.", "Use automorphy lifting theorems for Galois representations.", "Propagate automorphy through symmetric powers."],
       "The theorem establishes a major case of Langlands functoriality and has consequences for Sato–Tate phenomena.",
-      [source("Original preprint", "https://arxiv.org/abs/2212.03595", "preprint"), source("Clay Research Award", "https://www.claymath.org/news/2024-clay-research-award/", "institution")],
+      [source("Original preprint", "https://arxiv.org/abs/2212.03595", "preprint"), source("Annals of Mathematics publication", "https://annals.math.princeton.edu/2026/203-1/p04", "journal"), source("Clay Research Award", "https://www.claymath.org/news/2024-clay-research-award/", "institution")],
       { motif: "langlands", density: 8 }),
-    result("number", "recent", "unbounded-denominators", "Unbounded Denominators Conjecture", "De denominatoribus infinitis", "Frank Calegari, Vesselin Dimitrov, Yunqing Tang", "2021", "published",
+    result("number", "recent", "unbounded-denominators", "Unbounded Denominators Conjecture", "De denominatoribus infinitis", "Frank Calegari, Vesselin Dimitrov, Yunqing Tang", "2021 / 2025", "published",
       "A holomorphic modular form for a finite-index subgroup of SL₂(ℤ) whose Fourier coefficients have bounded denominators is modular for a congruence subgroup.",
       "f(q)=Σaₙqⁿ: modular form; Γ: finite-index subgroup.",
       "bounded denominators of aₙ  ⇒  Γ is congruence for f",
-      ["Convert bounded denominators into arithmetic constraints.", "Use p-adic geometry and modular curves.", "Rule out genuinely noncongruence forms with bounded denominators."],
+      ["Convert bounded denominators into an arithmetic holonomicity bound.", "Combine Nevanlinna's second main theorem with Fuchsian uniformization.", "Use the congruence subgroup property of SL₂(ℤ[1/p]) to force congruence."],
       "It resolves a long-standing criterion distinguishing congruence from noncongruence modular forms.",
-      [source("Original preprint", "https://arxiv.org/abs/2109.09040", "preprint"), source("Simons Foundation overview", "https://www.simonsfoundation.org/2021/09/28/unbounded-denominators-conjecture/", "institution")],
+      [source("Original preprint", "https://arxiv.org/abs/2109.09040", "preprint"), source("JAMS publication", "https://doi.org/10.1090/jams/1053", "journal"), source("Simons Foundation overview", "https://www.simonsfoundation.org/2021/09/28/unbounded-denominators-conjecture/", "institution")],
       { motif: "modular", density: 7 }),
     result("number", "recent", "kelley-meka-roth", "Kelley–Meka Bounds for Roth's Theorem", "De progressionibus arithmeticis", "Zander Kelley, Raghu Meka", "2023", "published",
-      "Subsets of {1,…,N} with no nontrivial three-term arithmetic progression have density at most exp(−c(log N)¹⁄¹¹).",
+      "There is a constant c > 0 such that every subset of {1,…,N} containing no nontrivial three-term arithmetic progression has size at most N exp(−c(log N)¹⁄¹²).",
       "A ⊂ {1,…,N}; r₃(N): largest size of a 3-AP-free set.",
-      "r₃(N) ≤ N exp(−c(log N)¹⁄¹¹)",
+      "r₃(N) ≤ N exp(−c(log N)¹⁄¹²)",
       ["Develop a new density-increment framework.", "Use almost-periodicity and spectral structure.", "Iterate without losing the improved quantitative scale."],
       "This was the first exponential-type improvement to Roth's theorem in decades.",
-      [source("Original preprint", "https://arxiv.org/abs/2302.07211", "preprint"), source("Quanta overview", "https://www.quantamagazine.org/two-students-unlock-a-proof-that-had-baffled-mathematicians-for-decades-20230222/", "background")],
+      [source("Original Kelley-Meka paper", "https://arxiv.org/abs/2302.05537", "preprint"), source("FOCS publication", "https://doi.org/10.1109/FOCS57990.2023.00059", "conference"), source("Published Bloom-Sisask exposition", "https://doi.org/10.2140/ent.2023.2.15", "journal"), source("Quanta overview", "https://www.quantamagazine.org/two-students-unlock-a-proof-that-had-baffled-mathematicians-for-decades-20230222/", "background")],
       { motif: "progression", density: 9 }),
     result("number", "historic", "fundamental-theorem-arithmetic", "Fundamental Theorem of Arithmetic", "Theorema fundamentale arithmeticae", "Euclid; modern formulation by Gauss", "c. 300 BCE / 1801", "classical",
       "Every integer greater than one factors into primes, uniquely up to ordering.",
@@ -339,7 +411,7 @@
       "Together with earlier subcritical work, this gives a canonical LQG metric throughout the full range c_M < 25.",
       [source("Original preprint", "https://arxiv.org/abs/2110.00177", "preprint"), source("Published paper", "https://doi.org/10.2140/pmp.2024.5.1", "journal"), source("Fields Institute background", "https://www.fields.utoronto.ca/activities/21-22/LQG", "institution")],
       { motif: "random-field", density: 8 }),
-    result("complex", "recent", "sle4-removability", "Conformal Removability of SLE₄", "De removabilitate conformi", "Konstantinos Kavvadias, Jason Miller, Lukas Schoug", "2022", "published",
+    result("complex", "recent", "sle4-removability", "Conformal Removability of SLE₄", "De removabilitate conformi", "Konstantinos Kavvadias, Jason Miller, Lukas Schoug", "2022", "preprint",
       "A chordal SLE₄ curve is almost surely conformally removable.",
       "η: SLE₄ curve; φ conformal on ℂ\\η.",
       "φ conformal on ℂ\\η  ⇒  φ is Möbius",
@@ -429,26 +501,26 @@
       [source("Original paper", "https://www.jstor.org/stable/1969989", "primary")],
       { motif: "embedding", density: 7 }),
 
-    result("graph", "recent", "kahn-kalai-theorem", "The Kahn–Kalai Conjecture", "De limine probabilitatis", "Jinyoung Park, Huy Tuan Pham", "2022", "published",
+    result("graph", "recent", "kahn-kalai-theorem", "The Kahn–Kalai Conjecture", "De limine probabilitatis", "Jinyoung Park, Huy Tuan Pham", "2022 / 2024", "published",
       "For every monotone property of a random subset, its threshold probability is at most a logarithmic factor above the expectation threshold.",
       "p_c: critical threshold; p_E: expectation threshold; ℓ: maximum witness size.",
       "p_c ≤ C p_E log ℓ",
       ["Encode witnesses in a hypergraph.", "Apply a sharp covering theorem for random subsets.", "Transfer the covering scale to the threshold scale."],
       "The theorem settles a central prediction about thresholds in probabilistic combinatorics.",
-      [source("Original preprint", "https://arxiv.org/abs/2203.17207", "preprint"), source("Quanta overview", "https://www.quantamagazine.org/two-students-unlock-a-proof-that-had-baffled-mathematicians-for-decades-20230222/", "background")],
+      [source("Original preprint", "https://arxiv.org/abs/2203.17207", "preprint"), source("JAMS publication", "https://doi.org/10.1090/jams/1028", "journal"), source("AMS threshold survey", "https://doi.org/10.1090/noti2802", "authoritative-survey")],
       { motif: "threshold", density: 9 }),
-    result("graph", "recent", "erdos-faber-lovasz", "Erdős–Faber–Lovász for Large Systems", "De coloribus hypergraphorum", "Dong Yeap Kang, Tom Kelly, Daniela Kühn, Abhishek Methuku, Deryk Osthus", "2021", "published",
+    result("graph", "recent", "erdos-faber-lovasz", "Erdős–Faber–Lovász for Large Systems", "De coloribus hypergraphorum", "Dong Yeap Kang, Tom Kelly, Daniela Kühn, Abhishek Methuku, Deryk Osthus", "2021 / 2023", "published",
       "Every sufficiently large linear hypergraph with n vertices and edges of size n can be edge-colored with at most n colors in the equivalent Erdős–Faber–Lovász formulation.",
       "H: linear hypergraph; χ′(H): edge chromatic number.",
       "χ′(H) ≤ n  for sufficiently large EFL systems",
       ["Decompose the hypergraph by degree scale.", "Use randomized nibble coloring for the sparse bulk.", "Absorb and color the structured remainder."],
       "The result proves the asymptotic range of a famous 1972 coloring conjecture.",
-      [source("Original preprint", "https://arxiv.org/abs/2101.04698", "preprint"), source("AMS combinatorics background", "https://www.ams.org/publicoutreach/feature-column/fcarc-coloring", "institution")],
+      [source("Original preprint", "https://arxiv.org/abs/2101.04698", "preprint"), source("Annals of Mathematics publication", "https://annals.math.princeton.edu/2023/198-2/p02", "journal"), source("AMS combinatorics background", "https://www.ams.org/publicoutreach/feature-column/fcarc-coloring", "institution")],
       { motif: "coloring", density: 8 }),
-    result("graph", "recent", "union-closed-lower-bound", "A Constant Lower Bound for Union-Closed Sets", "De familiis unione clausis", "Justin Gilmer and subsequent refinements", "2022", "published",
-      "Every nonempty finite union-closed family has an element contained in at least a constant fraction of its sets, with the constant strictly above the previous logarithmic-scale bounds.",
+    result("graph", "recent", "union-closed-lower-bound", "A Constant Lower Bound for Union-Closed Sets", "De familiis unione clausis", "Justin Gilmer", "2022", "preprint",
+      "Every nonempty finite union-closed family has an element contained in at least 0.01 of its member sets.",
       "𝔽: union-closed family; d(x): frequency of element x.",
-      "max_x d(x) ≥ c|𝔽|",
+      "max_x d(x) ≥ 0.01|𝔽|",
       ["Choose a random subfamily and study its union.", "Relate entropy to element frequencies.", "Optimize the probabilistic inequality to force a popular element."],
       "The work introduced a powerful new approach toward Frankl's union-closed sets conjecture.",
       [source("Original preprint", "https://arxiv.org/abs/2211.09055", "preprint"), source("Quanta overview", "https://www.quantamagazine.org/graduate-student-solves-decades-old-union-closed-sets-conjecture-20221116/", "background")],
@@ -532,14 +604,21 @@
     "telescope-conjecture-counterexamples": "2026-08-11",
     "last-kervaire-invariant": "2026-08-11",
     "seifert-surfaces-four-ball": "2026-08-11",
+    "symmetric-power-functoriality": "2026-08-11",
+    "unbounded-denominators": "2026-08-11",
+    "kelley-meka-roth": "2026-08-11",
     "lqg-metric-uniqueness": "2026-08-11",
+    "sle4-removability": "2026-08-11",
     "non-simple-sle-removability": "2026-08-11",
     "multiplicity-one-mean-curvature": "2026-08-11",
     "compact-bonnet-pairs": "2026-08-11",
     "positive-mass-stability": "2026-08-11",
     "three-dimensional-kakeya": "2026-08-11",
     "furstenberg-set-conjecture": "2026-08-11",
-    "restriction-estimates-r3": "2026-08-11"
+    "restriction-estimates-r3": "2026-08-11",
+    "kahn-kalai-theorem": "2026-08-11",
+    "erdos-faber-lovasz": "2026-08-11",
+    "union-closed-lower-bound": "2026-08-11"
   };
   results.forEach((item) => {
     item.sourceChecked = sourceChecks[item.slug] || reviewed;

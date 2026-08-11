@@ -16,10 +16,10 @@ if (manifest.summary.results !== 36) errors.push("Manifest does not cover all 36
 if (manifest.summary.due !== 0 || manifest.summary.soon !== 0) errors.push("Fresh 2026-08-11 corpus should have no due or soon records.");
 if (manifest.domains.length !== 6) errors.push("Manifest does not summarize six domains.");
 if (manifest.queue.length !== 12) errors.push("Manifest queue does not obey the configured queue size.");
-if (!manifest.checkpoint || manifest.checkpoint.evidence.length !== 4) errors.push("Manifest does not retain checkpoint evidence.");
+if (!manifest.checkpoint || manifest.checkpoint.evidence.length !== 11) errors.push("Manifest does not retain checkpoint evidence.");
 if (manifest.queue[0].slug !== "non-simple-sle-removability" || manifest.queue[1].slug !== "positive-mass-stability") errors.push("Accepted preprints are not first in the review queue.");
 if (!manifest.queue.every((item) => item.actions.length === 3)) errors.push("Review queue items need three concrete actions.");
-if (manifest.summary.revisionEntries !== 47) errors.push("Revision manifest does not count the 36 corpus entries and 11 source reviews.");
+if (manifest.summary.revisionEntries !== 54) errors.push("Revision manifest does not count the 36 corpus entries and 18 recent-result reviews.");
 
 const furstenberg = net.bySlug["furstenberg-set-conjecture"];
 const furstenbergRecord = core.recordFor(furstenberg, net.maintenance, "2026-08-11");

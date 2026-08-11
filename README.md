@@ -19,6 +19,7 @@ classical mathematical typesetting.
 - Shareable data-driven result folios with theorem statements, proof routes and sources
 - A field-specific `Genealogia Theorematum` constellation connecting all six results in each domain
 - Per-result `Codex Revisionis` traces with freshness, cadence, changed fields and status evidence
+- Roman source ranks (`I` primary text, `II` authoritative context, `III` reference) on every result folio
 - Semantic MathML rendering for all core formulas, with accessible text labels
 - A dedicated `Singularis` animation for every result, shown by default with `Systema` available for comparison
 - A manuscript-style `Apparatus Criticus` with six-domain review rings and an exportable revision queue
@@ -54,6 +55,8 @@ by `result.html?slug=<slug>`. The current research review date is
 `2026-06-11`. Individual source rechecks are recorded separately in
 `sourceChecked`; catalog-wide audit checkpoints live in `maintenance`, so a
 partial verification never silently changes the review date of all 36 folios.
+The latest checkpoint audits all 18 recent results and requires every
+`published` label to carry a journal or conference record.
 
 `maintenance.js` is the shared editorial clock and revision ledger used by both
 the browser and the CLI audit. Accepted preprints, preprints, published results
