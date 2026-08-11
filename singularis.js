@@ -58,23 +58,30 @@
   }
 
   function loop(c, x, y, rx, ry, phase, lobes, red, alpha) {
-    const points = [];
+    stroke(c, red, alpha, 1);
+    c.beginPath();
     for (let i = 0; i <= 180; i++) {
       const a = i / 180 * TAU;
       const warp = 1 + .13 * Math.sin(a * lobes + phase);
-      points.push([x + Math.cos(a) * rx * warp, y + Math.sin(a) * ry / warp]);
+      const px = x + Math.cos(a) * rx * warp;
+      const py = y + Math.sin(a) * ry / warp;
+      if (i) c.lineTo(px, py); else c.moveTo(px, py);
     }
-    polyline(c, points, red, alpha, 1);
+    c.stroke();
   }
 
   function wave(c, x1, x2, y, amplitude, frequency, phase, red, alpha, envelope) {
-    const points = [];
+    stroke(c, red, alpha, 1.1);
+    c.beginPath();
+    let first = true;
     for (let x = x1; x <= x2; x += 3) {
       const u = (x - x1) / (x2 - x1);
       const e = envelope ? Math.exp(-Math.pow((u - .5) / .22, 2)) : 1;
-      points.push([x, y + Math.sin(u * TAU * frequency + phase) * amplitude * e]);
+      const py = y + Math.sin(u * TAU * frequency + phase) * amplitude * e;
+      if (first) c.moveTo(x, py); else c.lineTo(x, py);
+      first = false;
     }
-    polyline(c, points, red, alpha, 1.1);
+    c.stroke();
   }
 
   function lattice(c, x, y, size, rows, phase, predicate) {

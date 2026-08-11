@@ -46,47 +46,82 @@
     map.append(exit.button, recent, historic);
     section.append(enter.button, map);
 
-    const item = { key, section, map, enter, exit, phase: "idle", transitionStart: 0, visible: true, timer: null };
+    const item = { key, section, map, enter, exit, phase: "idle", transitionStart: 0, visible: true, timer: null, transitionToken: 0, animationHandler: null };
     operators.push(item);
+
+    function announceCovered(covered) {
+      document.dispatchEvent(new CustomEvent("mathnet:portal-state", {
+        detail: { domain: key, covered }
+      }));
+    }
+
+    function afterAnimation(phase, callback) {
+      const token = ++item.transitionToken;
+      clearTimeout(item.timer);
+      if (item.animationHandler) map.removeEventListener("animationend", item.animationHandler);
+
+      function finish(event) {
+        if (event && event.target !== map) return;
+        map.removeEventListener("animationend", finish);
+        if (item.animationHandler === finish) item.animationHandler = null;
+        if (token !== item.transitionToken) return;
+        clearTimeout(item.timer);
+        item.timer = null;
+        callback();
+      }
+
+      item.animationHandler = finish;
+      map.addEventListener("animationend", finish);
+      item.timer = setTimeout(finish, reduceMotion ? 1 : 850);
+      item.phase = phase;
+    }
 
     function open() {
       operators.forEach((other) => {
         if (other === item) return;
         clearTimeout(other.timer);
-        other.section.classList.remove("portal-open", "portal-opening", "portal-closing");
+        other.transitionToken++;
+        if (other.animationHandler) other.map.removeEventListener("animationend", other.animationHandler);
+        other.animationHandler = null;
+        other.section.classList.remove("portal-active", "portal-open", "portal-opening", "portal-closing");
         other.enter.button.setAttribute("aria-expanded", "false");
         other.map.setAttribute("aria-hidden", "true");
+        if (other.phase !== "idle") {
+          document.dispatchEvent(new CustomEvent("mathnet:portal-state", {
+            detail: { domain: other.key, covered: false }
+          }));
+        }
         other.phase = "idle";
       });
-      clearTimeout(item.timer);
-      item.phase = "opening";
       item.transitionStart = performance.now();
       section.classList.remove("portal-closing");
-      section.classList.add("portal-open", "portal-opening");
+      section.classList.add("portal-active", "portal-open", "portal-opening");
       enter.button.setAttribute("aria-expanded", "true");
       map.setAttribute("aria-hidden", "false");
-      scheduleFrame();
-      item.timer = setTimeout(() => {
+      announceCovered(true);
+      afterAnimation("opening", () => {
         item.phase = "open";
         section.classList.remove("portal-opening");
         map.querySelector(".result-node")?.focus({ preventScroll: true });
-      }, reduceMotion ? 1 : 720);
+      });
+      scheduleFrame();
     }
 
     function close() {
-      clearTimeout(item.timer);
-      item.phase = "closing";
+      if (item.phase === "closing" || item.phase === "idle") return;
       item.transitionStart = performance.now();
       section.classList.remove("portal-open", "portal-opening");
       section.classList.add("portal-closing");
       enter.button.setAttribute("aria-expanded", "false");
       map.setAttribute("aria-hidden", "true");
-      scheduleFrame();
-      item.timer = setTimeout(() => {
-        section.classList.remove("portal-closing");
+      afterAnimation("closing", () => {
+        section.classList.remove("portal-active", "portal-closing");
         item.phase = "idle";
+        announceCovered(false);
         enter.button.focus({ preventScroll: true });
-      }, reduceMotion ? 1 : 780);
+        scheduleFrame();
+      });
+      scheduleFrame();
     }
 
     enter.button.addEventListener("click", open);
@@ -268,10 +303,9 @@
       if (!item.visible) return;
       const elapsed = Math.min(1, Math.max(0, (time - item.transitionStart) / 720));
       const pulse = item.phase === "opening" ? elapsed : item.phase === "closing" ? elapsed : .5 + Math.sin(time * .0015) * .12;
-      item.enter.ctx.clearRect(0, 0, item.enter.width, item.enter.height);
-      item.exit.ctx.clearRect(0, 0, item.exit.width, item.exit.height);
-      drawers[item.key](item.enter, time, false, pulse);
-      drawers[item.key](item.exit, time, true, pulse);
+      const part = item.phase === "idle" ? item.enter : item.exit;
+      part.ctx.clearRect(0, 0, part.width, part.height);
+      drawers[item.key](part, time, item.phase !== "idle", pulse);
     });
   }
 
@@ -281,7 +315,7 @@
       return;
     }
     if (frameId || frameDelay || document.hidden || !anyVisibleOperator()) return;
-    const wait = Math.max(0, 24 - (performance.now() - lastFrame));
+    const wait = Math.max(0, (innerWidth < 700 ? 40 : 33) - (performance.now() - lastFrame));
     if (wait > 1) {
       frameDelay = setTimeout(() => {
         frameDelay = 0;

@@ -235,7 +235,7 @@
       return;
     }
     if (!visible || document.hidden || frameId || frameDelay) return;
-    const wait = Math.max(0, 33 - (performance.now() - lastFrame));
+    const wait = Math.max(0, (innerWidth < 700 ? 40 : 33) - (performance.now() - lastFrame));
     if (wait > 1) {
       frameDelay = setTimeout(() => {
         frameDelay = 0;

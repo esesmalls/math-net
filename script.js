@@ -7,6 +7,10 @@ function canvasDpr(limit = 1.5) {
   return Math.min(devicePixelRatio || 1, innerWidth < 700 ? 1 : limit);
 }
 
+function animationInterval() {
+  return innerWidth < 700 ? 40 : 33;
+}
+
 const mouse = { x: innerWidth * 0.6, y: innerHeight * 0.45, px: innerWidth * 0.6, py: innerHeight * 0.45 };
 const cursor = $(".cursor-orbit");
 let cursorFrame = 0;
@@ -113,6 +117,24 @@ let particles = [];
 let fluidFrame = 0;
 let fluidLast = 0;
 let fluidDelay = 0;
+const fluidSprites = new Map();
+
+function fluidSprite(tint) {
+  if (fluidSprites.has(tint)) return fluidSprites.get(tint);
+  const sprite = document.createElement("canvas");
+  const size = 192;
+  sprite.width = size;
+  sprite.height = size;
+  const spriteContext = sprite.getContext("2d");
+  const gradient = spriteContext.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+  gradient.addColorStop(0, `rgba(${tint}, .09)`);
+  gradient.addColorStop(.45, `rgba(${tint}, .04)`);
+  gradient.addColorStop(1, `rgba(${tint}, 0)`);
+  spriteContext.fillStyle = gradient;
+  spriteContext.fillRect(0, 0, size, size);
+  fluidSprites.set(tint, sprite);
+  return sprite;
+}
 
 class FluidParticle {
   constructor(index) {
@@ -137,14 +159,11 @@ class FluidParticle {
     if (this.y < -this.radius * 2) this.reset();
   }
   draw() {
-    const gradient = fctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius);
-    gradient.addColorStop(0, `rgba(${this.tint}, .09)`);
-    gradient.addColorStop(0.45, `rgba(${this.tint}, .04)`);
-    gradient.addColorStop(1, `rgba(${this.tint}, 0)`);
-    fctx.fillStyle = gradient;
-    fctx.beginPath();
-    fctx.ellipse(this.x, this.y, this.radius * 0.72, this.radius, Math.sin(this.phase) * 2, 0, Math.PI * 2);
-    fctx.fill();
+    fctx.save();
+    fctx.translate(this.x, this.y);
+    fctx.rotate(Math.sin(this.phase) * 2);
+    fctx.drawImage(fluidSprite(this.tint), -this.radius * .72, -this.radius, this.radius * 1.44, this.radius * 2);
+    fctx.restore();
   }
 }
 
@@ -162,17 +181,15 @@ function resizeFluid() {
 
 function drawFluid(time) {
   fctx.clearRect(0, 0, fw, fh);
-  fctx.globalCompositeOperation = "multiply";
   particles.forEach((particle) => {
     particle.update(time);
     particle.draw();
   });
-  fctx.globalCompositeOperation = "source-over";
 }
 
 function scheduleFluid() {
   if (prefersReducedMotion || document.hidden || fluidFrame || fluidDelay) return;
-  const wait = Math.max(0, 33 - (performance.now() - fluidLast));
+  const wait = Math.max(0, animationInterval() - (performance.now() - fluidLast));
   if (wait > 1) {
     fluidDelay = setTimeout(() => {
       fluidDelay = 0;
@@ -203,6 +220,9 @@ let attractorFrame = 0;
 let attractorLast = 0;
 let attractorDelay = 0;
 let attractorVisible = false;
+let attractorGradient = null;
+let lorenzCursor = 0;
+const maxLorenzPoints = 2200;
 
 function resizeAttractor() {
   const rect = attractor.getBoundingClientRect();
@@ -212,6 +232,10 @@ function resizeAttractor() {
   attractor.width = aw * dpr;
   attractor.height = ah * dpr;
   actx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  attractorGradient = actx.createLinearGradient(0, 0, aw, 0);
+  attractorGradient.addColorStop(0, "rgba(91,53,32,.14)");
+  attractorGradient.addColorStop(.5, "rgba(48,37,24,.78)");
+  attractorGradient.addColorStop(1, "rgba(125,56,41,.4)");
 }
 
 function stepLorenz() {
@@ -223,8 +247,13 @@ function stepLorenz() {
   lorenzState.x += sigma * (y - x) * dt;
   lorenzState.y += (x * (rho - z) - y) * dt;
   lorenzState.z += (x * y - beta * z) * dt;
-  lorenzPoints.push({ ...lorenzState });
-  if (lorenzPoints.length > 2200) lorenzPoints.shift();
+  const point = { ...lorenzState };
+  if (lorenzPoints.length < maxLorenzPoints) {
+    lorenzPoints.push(point);
+  } else {
+    lorenzPoints[lorenzCursor] = point;
+    lorenzCursor = (lorenzCursor + 1) % maxLorenzPoints;
+  }
 }
 
 function drawAttractor(time) {
@@ -236,18 +265,15 @@ function drawAttractor(time) {
   const angle = time * 0.00004 + (mouse.x / innerWidth - 0.5) * 0.25;
   actx.rotate(angle * 0.18);
   actx.beginPath();
-  lorenzPoints.forEach((point, index) => {
+  for (let index = 0; index < lorenzPoints.length; index++) {
+    const point = lorenzPoints.length < maxLorenzPoints ? lorenzPoints[index] : lorenzPoints[(lorenzCursor + index) % maxLorenzPoints];
     const depth = point.z;
     const px = point.x * scale * 0.95 + Math.sin(depth * 0.045 + angle) * depth * 0.5;
     const py = (point.z - 25) * scale * 0.78 + point.y * Math.sin(angle) * 0.6;
     if (index === 0) actx.moveTo(px, py);
     else actx.lineTo(px, py);
-  });
-  const gradient = actx.createLinearGradient(-aw / 2, 0, aw / 2, 0);
-  gradient.addColorStop(0, "rgba(91,53,32,.14)");
-  gradient.addColorStop(0.5, "rgba(48,37,24,.78)");
-  gradient.addColorStop(1, "rgba(125,56,41,.4)");
-  actx.strokeStyle = gradient;
+  }
+  actx.strokeStyle = attractorGradient;
   actx.lineWidth = 0.8;
   actx.stroke();
   actx.restore();
@@ -255,7 +281,7 @@ function drawAttractor(time) {
 
 function scheduleAttractor() {
   if (prefersReducedMotion || !attractorVisible || document.hidden || attractorFrame || attractorDelay) return;
-  const wait = Math.max(0, 33 - (performance.now() - attractorLast));
+  const wait = Math.max(0, animationInterval() - (performance.now() - attractorLast));
   if (wait > 1) {
     attractorDelay = setTimeout(() => {
       attractorDelay = 0;
@@ -286,6 +312,7 @@ const domainScenes = $$(".domain-canvas").map((canvas) => ({
   width: 0,
   height: 0,
   visible: false,
+  covered: false,
   frame: 0
 }));
 let domainFrame = 0;
@@ -531,12 +558,12 @@ const domainDrawers = {
 };
 
 function anyDomainVisible() {
-  return domainScenes.some((scene) => scene.visible);
+  return domainScenes.some((scene) => scene.visible && !scene.covered);
 }
 
 function drawDomainScenes(time) {
   domainScenes.forEach((scene) => {
-    if (!scene.visible) return;
+    if (!scene.visible || scene.covered) return;
     scene.frame++;
     if (scene.type === "complex" && scene.frame % 3 !== 0) return;
     scene.ctx.clearRect(0, 0, scene.width, scene.height);
@@ -546,7 +573,7 @@ function drawDomainScenes(time) {
 
 function scheduleDomainScenes() {
   if (prefersReducedMotion || !anyDomainVisible() || document.hidden || domainFrame || domainDelay) return;
-  const wait = Math.max(0, 33 - (performance.now() - domainLast));
+  const wait = Math.max(0, animationInterval() - (performance.now() - domainLast));
   if (wait > 1) {
     domainDelay = setTimeout(() => {
       domainDelay = 0;
@@ -578,6 +605,13 @@ const domainVisibility = new IntersectionObserver((entries) => {
 domainScenes.forEach((scene) => {
   resizeDomainScene(scene);
   domainVisibility.observe(scene.canvas);
+});
+document.addEventListener("mathnet:portal-state", (event) => {
+  const scene = domainScenes.find((item) => item.type === event.detail.domain);
+  if (!scene) return;
+  scene.covered = event.detail.covered;
+  if (!scene.covered) drawDomainScenes(performance.now());
+  scheduleDomainScenes();
 });
 scheduleDomainScenes();
 

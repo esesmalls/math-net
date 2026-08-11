@@ -22,6 +22,14 @@ classical mathematical typesetting.
 - Local-only PDF submission and review Archivum backed by IndexedDB
 - Zero dependencies and no build step
 
+## Motion Performance
+
+- Canvas loops pause when the document or their section is outside the viewport.
+- A result portal suspends the covered field canvas until the inverse return completes.
+- Animation cadence is capped at 30 fps on desktop and 25 fps on narrow screens.
+- Fluid gradients and the Lorenz stroke gradient are cached instead of rebuilt per frame.
+- The Lorenz history uses a circular buffer, avoiding full-array shifts during animation.
+
 ## Run Locally
 
 Open `index.html` directly, or serve the directory with any static file server:
@@ -49,6 +57,7 @@ partial verification never silently changes the review date of all 36 folios.
 node tests/validate-results.js
 node tests/validate-catalog.js
 node tests/validate-mathml.js
+node tests/validate-motion-performance.js
 node tests/audit-catalog.js 2026-08-11
 ```
 
