@@ -59,6 +59,9 @@ if (descendants(ledger, "A").length !== 36) errors.push("Initial catalog does no
 if (domainFilter.children.length !== 7) errors.push("Catalog field filter is incomplete.");
 if (eraFilter.children.length !== 3) errors.push("Catalog era filter is incomplete.");
 if (!nodes["#catalog-audit"].textContent.includes("36 FOLIOS")) errors.push("Catalog audit summary is missing.");
+if (!nodes["#catalog-audit"].textContent.includes("18 DIRECT PAPERS")) errors.push("Catalog direct-paper count is incorrect.");
+if (!nodes["#catalog-audit"].textContent.includes("0 SEARCH PLACEHOLDERS")) errors.push("Catalog still reports search placeholders.");
+if (descendants(ledger, "A").filter((node) => node.dataset.provenance === "direct").length < 18) errors.push("Direct-paper provenance marks are incomplete.");
 
 eraFilter.children.find((node) => node.textContent === "RECENTIA").listeners.click();
 if (descendants(ledger, "A").length !== 18) errors.push("Recentia filter should expose 18 result links.");

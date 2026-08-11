@@ -14,6 +14,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
+section[id] { scroll-margin-top: 82px; }
 body {
   margin: 0;
   color: var(--ink);
@@ -380,6 +381,7 @@ main, footer { position: relative; z-index: 2; }
 .catalog-result strong { margin: 2.5vh 0 1.5vh; font: italic clamp(16px, 1.25vw, 21px)/1.25 var(--serif); }
 .catalog-result em { margin-top: auto; color: var(--ink-soft); font: italic 13px/1.45 var(--math); overflow-wrap: anywhere; }
 .catalog-result small { margin-top: 2vh; padding-top: 8px; border-top: 1px solid rgba(65,44,23,.13); font: 7px/1.5 var(--mono); letter-spacing: .05em; opacity: .68; }
+.catalog-result[data-provenance="direct"] small::before { content: "∎ "; color: var(--red-ink); }
 .catalog-domain-axis { position: relative; display: grid; place-content: center; gap: 8px; text-align: center; border-inline: 1px solid rgba(61,42,22,.13); background: rgba(188,162,108,.1); }
 .catalog-domain-axis::before, .catalog-domain-axis::after { content: ""; position: absolute; left: 50%; width: 1px; height: 25%; background: var(--line); }
 .catalog-domain-axis::before { top: 0; }

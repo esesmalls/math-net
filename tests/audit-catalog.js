@@ -20,7 +20,7 @@ const preprints = results.filter((item) => item.status.includes("preprint"));
 const searchIndexes = results.filter((item) => item.sources.some((source) => source.type === "primary-index"));
 
 console.log(`Catalog audit at ${today.toISOString().slice(0, 10)}`);
-console.log(`${results.length} folios · ${preprints.length} preprint-marked · ${searchIndexes.length} primary-index placeholders`);
+console.log(`${results.length} folios · ${preprints.length} preprint-marked · ${searchIndexes.length} search-index placeholders`);
 console.log(stale.length ? `Recheck due: ${stale.map((item) => item.slug).join(", ")}` : `No source checks older than ${cadence} days.`);
 
-if (strict && stale.length) process.exit(1);
+if (strict && (stale.length || searchIndexes.length)) process.exit(1);

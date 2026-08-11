@@ -10,6 +10,7 @@
   const eraFilter = document.querySelector("#catalog-era-filter");
   const audit = document.querySelector("#catalog-audit");
   const checkpoint = document.querySelector("#catalog-checkpoint");
+  const directSourceTypes = new Set(["preprint", "primary", "journal"]);
 
   function button(label, value, kind) {
     const node = document.createElement("button");
@@ -43,7 +44,9 @@
     formula.textContent = item.formula;
 
     const verification = document.createElement("small");
-    verification.textContent = `FONTES ${item.sources.length} · CHECK ${item.sourceChecked || item.reviewed}`;
+    const hasDirectPrimary = item.sources.some((source) => directSourceTypes.has(source.type));
+    link.dataset.provenance = hasDirectPrimary ? "direct" : "reference";
+    verification.textContent = `${hasDirectPrimary ? "DIRECT PAPER" : "REFERENCE"} · FONTES ${item.sources.length} · CHECK ${item.sourceChecked || item.reviewed}`;
 
     link.append(meta, title, formula, verification);
     return link;
@@ -99,7 +102,9 @@
 
   const sourceCount = net.results.reduce((sum, item) => sum + item.sources.length, 0);
   const preprintCount = net.results.filter((item) => item.status.includes("preprint")).length;
-  audit.textContent = `${net.results.length} FOLIOS · ${sourceCount} SOURCE LINKS · ${preprintCount} PREPRINT MARKS · CORPUS ${net.reviewed}`;
+  const recentDirectCount = net.results.filter((item) => item.era === "recent" && item.sources.some((source) => directSourceTypes.has(source.type))).length;
+  const searchPlaceholderCount = net.results.filter((item) => item.sources.some((source) => source.type === "primary-index")).length;
+  audit.textContent = `${net.results.length} FOLIOS · ${sourceCount} LINKS · ${recentDirectCount} DIRECT PAPERS · ${searchPlaceholderCount} SEARCH PLACEHOLDERS · ${preprintCount} PREPRINT MARKS · CORPUS ${net.reviewed}`;
 
   const maintenance = net.maintenance || {};
   const latest = (maintenance.checkpoints || [])[0];

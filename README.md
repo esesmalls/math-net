@@ -52,4 +52,5 @@ node tests/audit-catalog.js 2026-08-11
 
 Pass a review date to the catalog audit for reproducible output. Add `--strict`
 when an automated check should fail once any source review exceeds the configured
-90-day cadence.
+90-day cadence or a result falls back to a search-index placeholder instead of a
+direct primary-paper link.

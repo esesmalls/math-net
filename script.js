@@ -37,6 +37,30 @@ function scheduleCursor() {
 }
 scheduleCursor();
 
+function scrollToHash(hash, behavior = prefersReducedMotion ? "auto" : "smooth") {
+  if (!hash || hash === "#") return false;
+  const id = decodeURIComponent(hash.slice(1));
+  const target = document.getElementById(id);
+  if (!target) return false;
+  target.scrollIntoView({ behavior, block: "start" });
+  return true;
+}
+
+document.addEventListener("click", (event) => {
+  const link = event.target.closest("a[href^='#']");
+  if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  const hash = link.getAttribute("href");
+  if (!scrollToHash(hash)) return;
+  event.preventDefault();
+  if (location.hash !== hash) history.pushState(null, "", hash);
+});
+
+window.addEventListener("popstate", () => scrollToHash(location.hash || "#top"));
+window.addEventListener("load", () => {
+  if (!location.hash) return;
+  requestAnimationFrame(() => requestAnimationFrame(() => scrollToHash(location.hash, "auto")));
+});
+
 if (cursor && finePointer && !prefersReducedMotion) {
   $$("a, button, .field-card, .note-paper").forEach((element) => {
     element.addEventListener("pointerenter", () => cursor.classList.add("active"));

@@ -33,6 +33,8 @@ for (const item of results) {
   for (const entry of item.sources || []) {
     try { new URL(entry.url); } catch { errors.push(`${item.slug} has invalid source URL: ${entry.url}`); }
   }
+  if (item.sources.some((entry) => entry.type === "primary-index")) errors.push(`${item.slug} still uses a search-index source placeholder.`);
+  if (item.era === "recent" && !item.sources.some((entry) => ["preprint", "primary", "journal"].includes(entry.type))) errors.push(`${item.slug} lacks a direct primary-paper link.`);
   if (!item.visual || typeof singularis[item.visual.motif] !== "function") errors.push(`${item.slug} has no Singularis drawer.`);
 }
 
