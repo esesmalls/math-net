@@ -3,18 +3,51 @@
 
   const reviewed = "2026-06-11";
   const maintenance = {
-    schemaVersion: 2,
+    schemaVersion: 3,
     corpusReviewed: reviewed,
     reviewCadenceDays: 90,
+    reviewCadenceByStatus: {
+      "accepted preprint": 30,
+      preprint: 45,
+      published: 120,
+      proved: 120,
+      classical: 365,
+      default: 90
+    },
+    dueSoonDays: 21,
+    queueSize: 12,
     sourcePriority: ["primary-paper", "journal-or-institution", "reference"],
     checkpoints: [
       {
         date: "2026-08-11",
-        scope: "ten direct-paper checks; seven search-index placeholders retired",
+        scope: "eleven direct-paper checks; seven search-index placeholders retired",
         slugs: [
           "telescope-conjecture-counterexamples", "last-kervaire-invariant", "seifert-surfaces-four-ball",
           "lqg-metric-uniqueness", "non-simple-sle-removability", "multiplicity-one-mean-curvature",
-          "compact-bonnet-pairs", "positive-mass-stability", "three-dimensional-kakeya", "restriction-estimates-r3"
+          "compact-bonnet-pairs", "positive-mass-stability", "three-dimensional-kakeya",
+          "furstenberg-set-conjecture", "restriction-estimates-r3"
+        ],
+        evidence: [
+          {
+            slug: "furstenberg-set-conjecture",
+            url: "https://arxiv.org/abs/2308.08819",
+            outcome: "v3 remains an arXiv preprint with no journal reference; preprint mark retained"
+          },
+          {
+            slug: "non-simple-sle-removability",
+            url: "https://arxiv.org/abs/2302.10857",
+            outcome: "v2 is the final accepted version to Inventiones; accepted-preprint mark retained"
+          },
+          {
+            slug: "multiplicity-one-mean-curvature",
+            url: "https://arxiv.org/abs/2312.02106",
+            outcome: "v3 has no journal reference or acceptance note; preprint mark retained"
+          },
+          {
+            slug: "positive-mass-stability",
+            url: "https://arxiv.org/abs/2302.07414",
+            outcome: "v3 is marked to appear in Inventiones; accepted-preprint mark retained"
+          }
         ]
       }
     ]
@@ -397,6 +430,7 @@
     "compact-bonnet-pairs": "2026-08-11",
     "positive-mass-stability": "2026-08-11",
     "three-dimensional-kakeya": "2026-08-11",
+    "furstenberg-set-conjecture": "2026-08-11",
     "restriction-estimates-r3": "2026-08-11"
   };
   results.forEach((item) => {

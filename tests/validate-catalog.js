@@ -10,6 +10,7 @@ class FakeNode {
     this.listeners = {};
     this.hidden = false;
     this.textContent = "";
+    this.style = { values: {}, setProperty: (name, value) => { this.style.values[name] = value; } };
   }
 
   append(...nodes) { nodes.forEach((node) => this.appendChild(node)); }
@@ -31,14 +32,17 @@ class FakeNode {
 const dataContext = { window: {} };
 vm.createContext(dataContext);
 vm.runInContext(fs.readFileSync("results-data.js", "utf8"), dataContext);
+vm.runInContext(fs.readFileSync("maintenance.js", "utf8"), dataContext);
 
 const nodes = Object.fromEntries([
-  "#catalog-ledger", "#catalog-domain-filter", "#catalog-era-filter", "#catalog-audit", "#catalog-checkpoint"
+  "#catalog-ledger", "#catalog-domain-filter", "#catalog-era-filter", "#catalog-audit", "#catalog-checkpoint",
+  "#review-orbit", "#review-queue", "#review-summary", "#review-as-of", "#review-policy", "#export-review-queue"
 ].map((selector) => [selector, new FakeNode("div")]));
 const document = {
   querySelector: (selector) => nodes[selector] || null,
   createElement: (tagName) => new FakeNode(tagName)
 };
+dataContext.window.location = { search: "?audit=2026-08-11" };
 const catalogContext = { window: dataContext.window, document, Date, encodeURIComponent };
 vm.createContext(catalogContext);
 vm.runInContext(fs.readFileSync("catalog.js", "utf8"), catalogContext);
@@ -62,6 +66,11 @@ if (!nodes["#catalog-audit"].textContent.includes("36 FOLIOS")) errors.push("Cat
 if (!nodes["#catalog-audit"].textContent.includes("18 DIRECT PAPERS")) errors.push("Catalog direct-paper count is incorrect.");
 if (!nodes["#catalog-audit"].textContent.includes("0 SEARCH PLACEHOLDERS")) errors.push("Catalog still reports search placeholders.");
 if (descendants(ledger, "A").filter((node) => node.dataset.provenance === "direct").length < 18) errors.push("Direct-paper provenance marks are incomplete.");
+if (descendants(ledger, "A").filter((node) => node.dataset.review === "current").length !== 36) errors.push("Catalog review state does not cover all folios.");
+if (nodes["#review-orbit"].children.length !== 6) errors.push("Critical apparatus does not show six domain nodes.");
+if (nodes["#review-queue"].children.length !== 12) errors.push("Critical apparatus does not render the review queue.");
+if (nodes["#review-summary"].children[0]?.textContent !== "00") errors.push("Critical apparatus summary is incorrect.");
+if (!nodes["#review-policy"].textContent.includes("preprint 45d")) errors.push("Review cadence is not visible in the apparatus.");
 
 eraFilter.children.find((node) => node.textContent === "RECENTIA").listeners.click();
 if (descendants(ledger, "A").length !== 18) errors.push("Recentia filter should expose 18 result links.");

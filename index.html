@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#cbb98e">
   <title>Codex Infinitum · A Mathematical Manuscript</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="style.css?v=20260811.2">
+  <link rel="stylesheet" href="style.css?v=20260811.4">
 </head>
 <body>
   <canvas id="fluid" aria-hidden="true"></canvas>
@@ -198,6 +198,27 @@
         <p>Primary paper → journal or institution → reference. Preprints remain visibly marked until publication is verified.</p>
         <p id="catalog-checkpoint"></p>
       </aside>
+      <section class="critical-apparatus" id="apparatus" aria-labelledby="apparatus-title">
+        <header class="apparatus-head">
+          <div>
+            <span>APPARATUS CRITICUS · CHRONOLOGIA</span>
+            <h3 id="apparatus-title">Every theorem carries<br>a date in its margin.</h3>
+          </div>
+          <p>A source is not merely cited; it is revisited. The ring below turns publication state into a review cadence and a concrete next action.</p>
+        </header>
+        <div class="apparatus-body">
+          <div class="review-orbit" id="review-orbit" aria-label="Source-review cycle by mathematical field">
+            <div class="review-orbit-rings" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="review-orbit-center"><b>&Delta;t / &tau;</b><small id="review-as-of"></small></div>
+          </div>
+          <div class="review-ledger">
+            <div class="review-summary" id="review-summary" aria-live="polite"></div>
+            <ol class="review-queue" id="review-queue" aria-label="Next source-review queue"></ol>
+            <button class="review-export" id="export-review-queue" type="button">EXPORT REVISION MANIFEST</button>
+          </div>
+        </div>
+        <footer class="review-policy" id="review-policy"></footer>
+      </section>
     </section>
 
     <section class="interlude">
@@ -312,11 +333,12 @@
     <div class="footer-meta"><span>FOLIO CONTINUES</span><span>© MMXXVI</span></div>
   </footer>
 
-  <script src="results-data.js?v=20260811.2"></script>
-  <script src="mathml.js?v=20260811.2"></script>
-  <script src="catalog.js?v=20260811.2"></script>
-  <script src="script.js?v=20260811.2"></script>
-  <script src="portals.js?v=20260811.2"></script>
-  <script src="submissions.js?v=20260811.2"></script>
+  <script src="results-data.js?v=20260811.4"></script>
+  <script src="maintenance.js?v=20260811.4"></script>
+  <script src="mathml.js?v=20260811.4"></script>
+  <script src="catalog.js?v=20260811.4"></script>
+  <script src="script.js?v=20260811.4"></script>
+  <script src="portals.js?v=20260811.4"></script>
+  <script src="submissions.js?v=20260811.4"></script>
 </body>
 </html>

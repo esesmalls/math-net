@@ -19,6 +19,7 @@ classical mathematical typesetting.
 - Shareable data-driven result folios with theorem statements, proof routes and sources
 - Semantic MathML rendering for all core formulas, with accessible text labels
 - A dedicated `Singularis` animation for every result, shown by default with `Systema` available for comparison
+- A manuscript-style `Apparatus Criticus` with six-domain review rings and an exportable revision queue
 - Local-only PDF submission and review Archivum backed by IndexedDB
 - Zero dependencies and no build step
 
@@ -52,14 +53,22 @@ by `result.html?slug=<slug>`. The current research review date is
 `sourceChecked`; catalog-wide audit checkpoints live in `maintenance`, so a
 partial verification never silently changes the review date of all 36 folios.
 
+`maintenance.js` is the shared editorial clock used by both the browser and the
+CLI audit. Accepted preprints, preprints, published results and classical
+results have separate review cadences. Open `index.html?audit=YYYY-MM-DD#apparatus`
+to reproduce the apparatus at a fixed date, or export its JSON revision manifest
+directly from the page.
+
 ## Validation
 
 ```bash
 node tests/validate-results.js
 node tests/validate-catalog.js
 node tests/validate-mathml.js
+node tests/validate-maintenance.js
 node tests/validate-motion-performance.js
 node tests/audit-catalog.js 2026-08-11
+node tests/audit-catalog.js 2026-08-11 --json
 ```
 
 Pass a review date to the catalog audit for reproducible output. Add `--strict`

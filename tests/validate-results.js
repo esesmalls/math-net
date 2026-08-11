@@ -14,9 +14,11 @@ const required = ["slug", "domain", "era", "title", "latinTitle", "authors", "ye
 if (results.length !== 36) errors.push(`Expected 36 results, found ${results.length}.`);
 if (Object.keys(bySlug).length !== 36) errors.push("Slugs are not unique.");
 if (reviewed !== "2026-06-11") errors.push(`Unexpected review date: ${reviewed}.`);
-if (!maintenance || maintenance.schemaVersion !== 2) errors.push("Missing catalog maintenance schema v2.");
+if (!maintenance || maintenance.schemaVersion !== 3) errors.push("Missing catalog maintenance schema v3.");
 if (!maintenance || !Array.isArray(maintenance.checkpoints) || !maintenance.checkpoints.length) errors.push("Missing source-review checkpoints.");
 if (maintenance && maintenance.corpusReviewed !== reviewed) errors.push("Maintenance corpus date and result corpus date differ.");
+if (!maintenance || !maintenance.reviewCadenceByStatus || maintenance.reviewCadenceByStatus.preprint !== 45) errors.push("Missing status-aware review cadence.");
+if (!maintenance || maintenance.dueSoonDays !== 21 || maintenance.queueSize !== 12) errors.push("Missing review-queue policy.");
 
 for (const [domain, config] of Object.entries(domains)) {
   const group = byDomain[domain] || [];
@@ -41,7 +43,14 @@ for (const item of results) {
 for (const checkpoint of maintenance.checkpoints || []) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(checkpoint.date)) errors.push(`Invalid checkpoint date: ${checkpoint.date}.`);
   for (const slug of checkpoint.slugs || []) if (!bySlug[slug]) errors.push(`Checkpoint references unknown slug: ${slug}.`);
+  for (const evidence of checkpoint.evidence || []) {
+    if (!bySlug[evidence.slug]) errors.push(`Checkpoint evidence references unknown slug: ${evidence.slug}.`);
+    try { new URL(evidence.url); } catch { errors.push(`Checkpoint evidence has invalid URL: ${evidence.url}`); }
+    if (!evidence.outcome) errors.push(`Checkpoint evidence lacks an outcome: ${evidence.slug}.`);
+  }
 }
+if (!(maintenance.checkpoints || []).some((checkpoint) => checkpoint.slugs.includes("furstenberg-set-conjecture"))) errors.push("Furstenberg status recheck is missing from the maintenance ledger.");
+if ((maintenance.checkpoints[0].evidence || []).length !== 4) errors.push("Latest maintenance checkpoint should retain four status-review notes.");
 
 const mockContext = new Proxy({
   beginPath() {}, moveTo() {}, lineTo() {}, stroke() {}, fill() {}, arc() {}, ellipse() {},
