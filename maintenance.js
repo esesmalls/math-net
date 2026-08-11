@@ -112,11 +112,39 @@
     });
   }
 
+  function revisionTrailFor(item, policy) {
+    const trail = [];
+    (policy.checkpoints || []).forEach((checkpoint) => {
+      const review = (checkpoint.reviews || []).find((entry) => entry.slug === item.slug);
+      if (!review) return;
+      const evidence = (checkpoint.evidence || []).find((entry) => entry.slug === item.slug) || null;
+      trail.push({
+        date: checkpoint.date,
+        kind: "source-review",
+        label: "FONTES RECENSITI",
+        scope: checkpoint.scope,
+        outcome: review.outcome,
+        changedFields: review.changedFields || [],
+        evidence
+      });
+    });
+    trail.push({
+      date: item.reviewed || policy.corpusReviewed,
+      kind: "corpus-entry",
+      label: "FOLIUM CONSTITUTUM",
+      scope: "Initial research-corpus review",
+      outcome: "Theorem statement, notation, proof route, significance and traceable sources entered into the static corpus.",
+      changedFields: ["theorem", "symbols", "formula", "proof", "significance", "sources"],
+      evidence: null
+    });
+    return trail.sort((a, b) => b.date.localeCompare(a.date) || a.kind.localeCompare(b.kind));
+  }
+
   function buildManifest(results, domains, policy, asOf) {
     const auditDate = isoDate(asOf);
     const records = results.map((item) => recordFor(item, policy, auditDate));
     return {
-      schemaVersion: 1,
+      schemaVersion: 2,
       generatedAt: auditDate,
       corpusReviewed: policy.corpusReviewed,
       checkpoint: (policy.checkpoints || [])[0] || null,
@@ -128,7 +156,8 @@
       summary: {
         results: records.length,
         due: records.filter((item) => item.state === "due").length,
-        soon: records.filter((item) => item.state === "soon").length
+        soon: records.filter((item) => item.state === "soon").length,
+        revisionEntries: results.reduce((sum, item) => sum + revisionTrailFor(item, policy).length, 0)
       },
       domains: summarizeDomains(results, domains, policy, auditDate),
       queue: buildQueue(results, policy, auditDate)
@@ -143,6 +172,7 @@
     recordFor,
     buildQueue,
     summarizeDomains,
+    revisionTrailFor,
     buildManifest
   };
 }(typeof window === "undefined" ? globalThis : window));

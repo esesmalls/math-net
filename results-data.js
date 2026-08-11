@@ -3,7 +3,7 @@
 
   const reviewed = "2026-06-11";
   const maintenance = {
-    schemaVersion: 3,
+    schemaVersion: 4,
     corpusReviewed: reviewed,
     reviewCadenceDays: 90,
     reviewCadenceByStatus: {
@@ -47,6 +47,63 @@
             slug: "positive-mass-stability",
             url: "https://arxiv.org/abs/2302.07414",
             outcome: "v3 is marked to appear in Inventiones; accepted-preprint mark retained"
+          }
+        ],
+        reviews: [
+          {
+            slug: "telescope-conjecture-counterexamples",
+            outcome: "Canonical arXiv paper linked directly; search-index placeholder retired.",
+            changedFields: ["sources", "sourceChecked"]
+          },
+          {
+            slug: "last-kervaire-invariant",
+            outcome: "Canonical arXiv paper linked directly; search-index placeholder retired.",
+            changedFields: ["sources", "sourceChecked"]
+          },
+          {
+            slug: "seifert-surfaces-four-ball",
+            outcome: "Canonical arXiv paper linked directly; search-index placeholder retired.",
+            changedFields: ["sources", "sourceChecked"]
+          },
+          {
+            slug: "lqg-metric-uniqueness",
+            outcome: "Primary paper and published journal record reconciled; search-index placeholder retired.",
+            changedFields: ["sources", "sourceChecked"]
+          },
+          {
+            slug: "non-simple-sle-removability",
+            outcome: "Accepted-version note verified against arXiv; accepted-preprint status retained.",
+            changedFields: ["sourceChecked"]
+          },
+          {
+            slug: "multiplicity-one-mean-curvature",
+            outcome: "Latest arXiv version checked; no journal or acceptance note found, so preprint status was retained.",
+            changedFields: ["sourceChecked"]
+          },
+          {
+            slug: "compact-bonnet-pairs",
+            outcome: "Primary paper and journal DOI reconciled; search-index placeholder retired.",
+            changedFields: ["sources", "sourceChecked"]
+          },
+          {
+            slug: "positive-mass-stability",
+            outcome: "Forthcoming journal note verified against arXiv; accepted-preprint status retained.",
+            changedFields: ["sourceChecked"]
+          },
+          {
+            slug: "three-dimensional-kakeya",
+            outcome: "Canonical preprint and authoritative Bourbaki survey linked; search-index placeholder retired.",
+            changedFields: ["sources", "sourceChecked"]
+          },
+          {
+            slug: "furstenberg-set-conjecture",
+            outcome: "Latest arXiv version checked; no journal reference found, so preprint status was retained.",
+            changedFields: ["sourceChecked"]
+          },
+          {
+            slug: "restriction-estimates-r3",
+            outcome: "Canonical arXiv paper linked directly; search-index placeholder retired.",
+            changedFields: ["sources", "sourceChecked"]
           }
         ]
       }
@@ -101,6 +158,57 @@
       returnName: "Inverse Fourier synthesis",
       portalName: "Gabor decomposition"
     }
+  };
+
+  const constellations = {
+    topology: [
+      ["telescope-conjecture-counterexamples", "last-kervaire-invariant", "stable homotopy"],
+      ["last-kervaire-invariant", "seifert-surfaces-four-ball", "framing and cobordism"],
+      ["seifert-surfaces-four-ball", "poincare-conjecture", "four-manifold topology"],
+      ["poincare-conjecture", "euler-characteristic", "manifold invariants"],
+      ["euler-characteristic", "brouwer-fixed-point", "fixed-point index"],
+      ["brouwer-fixed-point", "poincare-conjecture", "topological manifolds"]
+    ],
+    number: [
+      ["symmetric-power-functoriality", "fermats-last-theorem", "modularity"],
+      ["symmetric-power-functoriality", "unbounded-denominators", "automorphic forms"],
+      ["unbounded-denominators", "fermats-last-theorem", "modular arithmetic"],
+      ["fermats-last-theorem", "fundamental-theorem-arithmetic", "Diophantine integers"],
+      ["fundamental-theorem-arithmetic", "prime-number-theorem", "prime structure"],
+      ["prime-number-theorem", "kelley-meka-roth", "density and progressions"]
+    ],
+    complex: [
+      ["lqg-metric-uniqueness", "sle4-removability", "conformal random geometry"],
+      ["sle4-removability", "non-simple-sle-removability", "removability threshold"],
+      ["non-simple-sle-removability", "riemann-mapping-theorem", "conformal welding"],
+      ["riemann-mapping-theorem", "cauchy-integral-formula", "holomorphic structure"],
+      ["cauchy-integral-formula", "picard-theorems", "analytic rigidity"],
+      ["riemann-mapping-theorem", "lqg-metric-uniqueness", "conformal covariance"]
+    ],
+    geometry: [
+      ["multiplicity-one-mean-curvature", "gauss-bonnet", "curvature evolution"],
+      ["gauss-bonnet", "theorema-egregium", "intrinsic curvature"],
+      ["theorema-egregium", "compact-bonnet-pairs", "intrinsic versus extrinsic"],
+      ["compact-bonnet-pairs", "nash-embedding", "isometric realization"],
+      ["nash-embedding", "positive-mass-stability", "geometric rigidity"],
+      ["positive-mass-stability", "gauss-bonnet", "global curvature"]
+    ],
+    graph: [
+      ["kahn-kalai-theorem", "erdos-faber-lovasz", "probabilistic hypergraphs"],
+      ["kahn-kalai-theorem", "union-closed-lower-bound", "extremal set systems"],
+      ["union-closed-lower-bound", "graph-minor-theorem", "finite obstructions"],
+      ["graph-minor-theorem", "four-color-theorem", "minor structure"],
+      ["four-color-theorem", "erdos-faber-lovasz", "graph coloring"],
+      ["graph-minor-theorem", "seven-bridges", "structural graph theory"]
+    ],
+    harmonic: [
+      ["three-dimensional-kakeya", "furstenberg-set-conjecture", "incidence dimension"],
+      ["three-dimensional-kakeya", "restriction-estimates-r3", "wave packets"],
+      ["furstenberg-set-conjecture", "restriction-estimates-r3", "two-ends geometry"],
+      ["restriction-estimates-r3", "plancherel-theorem", "Fourier extension"],
+      ["plancherel-theorem", "fourier-series", "orthogonal expansion"],
+      ["plancherel-theorem", "heisenberg-uncertainty", "time-frequency duality"]
+    ]
   };
 
   const commonBackground = {
@@ -441,6 +549,7 @@
     reviewed,
     maintenance,
     domains,
+    constellations,
     results,
     bySlug: Object.fromEntries(results.map((item) => [item.slug, item])),
     byDomain: Object.fromEntries(Object.keys(domains).map((key) => [key, results.filter((item) => item.domain === key)]))

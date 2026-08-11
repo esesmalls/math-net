@@ -6,7 +6,7 @@ vm.createContext(context);
 vm.runInContext(fs.readFileSync("results-data.js", "utf8"), context);
 vm.runInContext(fs.readFileSync("singularis.js", "utf8"), context);
 
-const { results, domains, bySlug, byDomain, reviewed, maintenance } = context.window.MATH_NET;
+const { results, domains, constellations, bySlug, byDomain, reviewed, maintenance } = context.window.MATH_NET;
 const singularis = context.window.SINGULARIS_DRAWERS;
 const errors = [];
 const required = ["slug", "domain", "era", "title", "latinTitle", "authors", "year", "status", "theorem", "symbols", "formula", "proof", "significance", "reviewed", "sourceChecked", "sources"];
@@ -14,7 +14,7 @@ const required = ["slug", "domain", "era", "title", "latinTitle", "authors", "ye
 if (results.length !== 36) errors.push(`Expected 36 results, found ${results.length}.`);
 if (Object.keys(bySlug).length !== 36) errors.push("Slugs are not unique.");
 if (reviewed !== "2026-06-11") errors.push(`Unexpected review date: ${reviewed}.`);
-if (!maintenance || maintenance.schemaVersion !== 3) errors.push("Missing catalog maintenance schema v3.");
+if (!maintenance || maintenance.schemaVersion !== 4) errors.push("Missing catalog maintenance schema v4.");
 if (!maintenance || !Array.isArray(maintenance.checkpoints) || !maintenance.checkpoints.length) errors.push("Missing source-review checkpoints.");
 if (maintenance && maintenance.corpusReviewed !== reviewed) errors.push("Maintenance corpus date and result corpus date differ.");
 if (!maintenance || !maintenance.reviewCadenceByStatus || maintenance.reviewCadenceByStatus.preprint !== 45) errors.push("Missing status-aware review cadence.");
@@ -25,6 +25,28 @@ for (const [domain, config] of Object.entries(domains)) {
   if (group.length !== 6) errors.push(`${config.name} has ${group.length} results.`);
   if (group.filter((item) => item.era === "recent").length !== 3) errors.push(`${config.name} does not have 3 recent results.`);
   if (group.filter((item) => item.era === "historic").length !== 3) errors.push(`${config.name} does not have 3 historic results.`);
+  const slugs = new Set(group.map((item) => item.slug));
+  const edges = constellations[domain] || [];
+  const adjacent = Object.fromEntries([...slugs].map((slug) => [slug, []]));
+  const edgeKeys = new Set();
+  for (const [from, to, relation] of edges) {
+    if (!slugs.has(from) || !slugs.has(to)) errors.push(`${config.name} constellation crosses its field boundary: ${from} -> ${to}.`);
+    if (from === to) errors.push(`${config.name} constellation contains a self-loop: ${from}.`);
+    if (!relation) errors.push(`${config.name} constellation has an unlabeled relation.`);
+    const key = [from, to].sort().join("::");
+    if (edgeKeys.has(key)) errors.push(`${config.name} constellation repeats relation ${key}.`);
+    edgeKeys.add(key);
+    if (adjacent[from] && adjacent[to]) { adjacent[from].push(to); adjacent[to].push(from); }
+  }
+  const reached = new Set();
+  const queue = [[...slugs][0]];
+  while (queue.length) {
+    const slug = queue.shift();
+    if (reached.has(slug)) continue;
+    reached.add(slug);
+    queue.push(...(adjacent[slug] || []));
+  }
+  if (reached.size !== 6) errors.push(`${config.name} theorem constellation is disconnected.`);
 }
 
 for (const item of results) {
@@ -48,6 +70,14 @@ for (const checkpoint of maintenance.checkpoints || []) {
     try { new URL(evidence.url); } catch { errors.push(`Checkpoint evidence has invalid URL: ${evidence.url}`); }
     if (!evidence.outcome) errors.push(`Checkpoint evidence lacks an outcome: ${evidence.slug}.`);
   }
+  const reviewSlugs = new Set();
+  for (const review of checkpoint.reviews || []) {
+    if (!bySlug[review.slug]) errors.push(`Checkpoint review references unknown slug: ${review.slug}.`);
+    if (reviewSlugs.has(review.slug)) errors.push(`Checkpoint repeats review: ${review.slug}.`);
+    if (!review.outcome || !Array.isArray(review.changedFields) || !review.changedFields.length) errors.push(`Checkpoint review is incomplete: ${review.slug}.`);
+    reviewSlugs.add(review.slug);
+  }
+  if ((checkpoint.slugs || []).some((slug) => !reviewSlugs.has(slug)) || reviewSlugs.size !== (checkpoint.slugs || []).length) errors.push(`Checkpoint review ledger does not match its declared scope: ${checkpoint.date}.`);
 }
 if (!(maintenance.checkpoints || []).some((checkpoint) => checkpoint.slugs.includes("furstenberg-set-conjecture"))) errors.push("Furstenberg status recheck is missing from the maintenance ledger.");
 if ((maintenance.checkpoints[0].evidence || []).length !== 4) errors.push("Latest maintenance checkpoint should retain four status-review notes.");

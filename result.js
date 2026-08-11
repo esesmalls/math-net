@@ -12,6 +12,19 @@
     if (node) node.textContent = value;
   }
 
+  function makeElement(tagName, className, text) {
+    const node = document.createElement(tagName);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function makeSvg(tagName, attributes) {
+    const node = document.createElementNS("http://www.w3.org/2000/svg", tagName);
+    Object.entries(attributes || {}).forEach(([name, value]) => node.setAttribute(name, value));
+    return node;
+  }
+
   function renderError() {
     mainSections.forEach((node) => { node.hidden = true; });
     $("#result-error").hidden = false;
@@ -67,6 +80,118 @@
     link.append(type, label);
     sourceList.appendChild(link);
   });
+
+  function renderConstellation() {
+    const domainResults = window.MATH_NET.byDomain[result.domain];
+    const edges = window.MATH_NET.constellations[result.domain];
+    const lineLayer = $("#result-lineage-lines");
+    const nodeLayer = $("#result-lineage-nodes");
+    const outerPositions = [[500, 82], [812, 215], [760, 510], [240, 510], [188, 215]];
+    const positions = { [result.slug]: [500, 310] };
+    domainResults.filter((item) => item.slug !== result.slug).forEach((item, index) => {
+      positions[item.slug] = outerPositions[index];
+    });
+
+    setText("#lineage-domain", domain.latin.toUpperCase());
+    lineLayer.replaceChildren();
+    nodeLayer.replaceChildren();
+
+    lineLayer.append(
+      makeSvg("ellipse", { cx: 500, cy: 310, rx: 355, ry: 248, class: "lineage-orbit" }),
+      makeSvg("circle", { cx: 500, cy: 310, r: 112, class: "lineage-orbit lineage-orbit-inner" }),
+      makeSvg("path", { d: "M90 310 H910 M500 34 V586", class: "lineage-axis" })
+    );
+    const watermark = makeSvg("text", { x: 500, y: 335, class: "lineage-watermark", "text-anchor": "middle" });
+    watermark.textContent = domain.symbol;
+    lineLayer.appendChild(watermark);
+
+    edges.forEach(([from, to, relation], index) => {
+      const a = positions[from];
+      const b = positions[to];
+      const midpoint = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+      const dx = b[0] - a[0];
+      const dy = b[1] - a[1];
+      const bend = (index % 2 ? -1 : 1) * Math.min(34, Math.hypot(dx, dy) * .08);
+      const length = Math.max(1, Math.hypot(dx, dy));
+      const control = [midpoint[0] - dy / length * bend, midpoint[1] + dx / length * bend];
+      const current = from === result.slug || to === result.slug;
+      const group = makeSvg("g", { class: `lineage-relation${current ? " is-current" : ""}` });
+      group.appendChild(makeSvg("path", { d: `M ${a[0]} ${a[1]} Q ${control[0]} ${control[1]} ${b[0]} ${b[1]}` }));
+      const label = makeSvg("text", { x: control[0], y: control[1] - 8, "text-anchor": "middle" });
+      label.textContent = relation;
+      group.appendChild(label);
+      lineLayer.appendChild(group);
+    });
+
+    [result, ...domainResults.filter((item) => item.slug !== result.slug)].forEach((item) => {
+      const current = item.slug === result.slug;
+      const node = makeElement(current ? "div" : "a", `lineage-node${current ? " is-current" : ""}`);
+      const position = positions[item.slug];
+      node.style.setProperty("--lineage-x", `${position[0] / 10}%`);
+      node.style.setProperty("--lineage-y", `${position[1] / 6.2}%`);
+      if (!current) node.href = `result.html?slug=${encodeURIComponent(item.slug)}#lineage`;
+      else node.setAttribute("aria-current", "page");
+      node.append(
+        makeElement("small", "lineage-era", item.era === "recent" ? "RECENTIA" : "HISTORICA"),
+        makeElement("strong", "lineage-title", item.title),
+        makeElement("span", "lineage-year", item.year)
+      );
+      nodeLayer.appendChild(node);
+    });
+  }
+
+  function appendMetric(list, term, description) {
+    list.append(makeElement("dt", "", term), makeElement("dd", "", description));
+  }
+
+  function renderRevisionTrail() {
+    const core = window.MATH_MAINTENANCE;
+    const policy = window.MATH_NET.maintenance;
+    const fallbackDate = new Date().toISOString().slice(0, 10);
+    const auditDate = core.asOfFromSearch(location.search, fallbackDate);
+    const record = core.recordFor(result, policy, auditDate);
+    const trail = core.revisionTrailFor(result, policy);
+    const freshness = Math.round(record.freshness * 100);
+    const seal = $("#revision-seal");
+    seal.dataset.state = record.state;
+    seal.style.setProperty("--freshness-angle", `${record.freshness * 360}deg`);
+    setText("#revision-freshness", `${freshness}%`);
+    setText("#revision-state", record.state.toUpperCase());
+
+    const metrics = $("#revision-metrics");
+    appendMetric(metrics, "STATUS", result.status.toUpperCase());
+    appendMetric(metrics, "LAST VERIFICATION", record.sourceChecked);
+    appendMetric(metrics, "NEXT REVIEW", record.dueDate);
+    appendMetric(metrics, "CADENCE", `${record.cadenceDays} DAYS`);
+    appendMetric(metrics, "AUDIT HORIZON", auditDate);
+
+    const list = $("#result-revisions");
+    trail.forEach((entry) => {
+      const item = makeElement("li", `revision-entry revision-${entry.kind}`);
+      const index = makeElement("span", "revision-index", String(trail.length - list.children.length).padStart(2, "0"));
+      const copy = makeElement("div", "revision-copy");
+      copy.append(
+        makeElement("small", "revision-date", `${entry.date} · ${entry.label}`),
+        makeElement("p", "revision-outcome", entry.outcome)
+      );
+      if (entry.changedFields.length) {
+        copy.appendChild(makeElement("span", "revision-fields", `FIELDS · ${entry.changedFields.join(" · ").toUpperCase()}`));
+      }
+      if (entry.evidence) {
+        const evidence = makeElement("a", "revision-evidence", "OPEN STATUS EVIDENCE ↗");
+        evidence.href = entry.evidence.url;
+        evidence.target = "_blank";
+        evidence.rel = "noopener noreferrer";
+        evidence.title = entry.evidence.outcome;
+        copy.appendChild(evidence);
+      }
+      item.append(index, copy);
+      list.appendChild(item);
+    });
+  }
+
+  renderConstellation();
+  renderRevisionTrail();
 
   const canvas = $("#result-canvas");
   const ctx = canvas.getContext("2d");
@@ -281,4 +406,18 @@
   document.addEventListener("visibilitychange", scheduleFrame);
   resize();
   scheduleFrame();
+
+  function restoreHashTarget() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const target = id && document.getElementById(id);
+    if (!target) return;
+    requestAnimationFrame(() => {
+      const navHeight = $(".result-nav")?.getBoundingClientRect().height || 0;
+      const top = target.getBoundingClientRect().top + scrollY - navHeight;
+      scrollTo({ top, behavior: "instant" });
+    });
+  }
+
+  addEventListener("hashchange", restoreHashTarget);
+  restoreHashTarget();
 }());

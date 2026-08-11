@@ -22,6 +22,7 @@ if (json) {
 } else {
   console.log(`Catalog audit at ${today}`);
   console.log(`${results.length} folios · ${preprints.length} preprint-marked · ${searchIndexes.length} search-index placeholders`);
+  console.log(`${manifest.summary.revisionEntries} traceable editorial revisions in the ledger`);
   console.log(due.length ? `Recheck due: ${due.map((item) => item.slug).join(", ")}` : "No status-aware source checks are overdue.");
   console.log(`Next queue: ${manifest.queue.slice(0, 6).map((item) => `${item.slug}@${item.dueDate}`).join(", ")}`);
 }

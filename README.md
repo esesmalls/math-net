@@ -17,6 +17,8 @@ classical mathematical typesetting.
 - Six result portals per field: three recent breakthroughs and three historical results
 - Paired animated field operators: each entrance has a mathematically inverse return operator
 - Shareable data-driven result folios with theorem statements, proof routes and sources
+- A field-specific `Genealogia Theorematum` constellation connecting all six results in each domain
+- Per-result `Codex Revisionis` traces with freshness, cadence, changed fields and status evidence
 - Semantic MathML rendering for all core formulas, with accessible text labels
 - A dedicated `Singularis` animation for every result, shown by default with `Systema` available for comparison
 - A manuscript-style `Apparatus Criticus` with six-domain review rings and an exportable revision queue
@@ -53,9 +55,10 @@ by `result.html?slug=<slug>`. The current research review date is
 `sourceChecked`; catalog-wide audit checkpoints live in `maintenance`, so a
 partial verification never silently changes the review date of all 36 folios.
 
-`maintenance.js` is the shared editorial clock used by both the browser and the
-CLI audit. Accepted preprints, preprints, published results and classical
-results have separate review cadences. Open `index.html?audit=YYYY-MM-DD#apparatus`
+`maintenance.js` is the shared editorial clock and revision ledger used by both
+the browser and the CLI audit. Accepted preprints, preprints, published results
+and classical results have separate review cadences. Each checkpoint records a
+per-folio outcome and changed-field list. Open `index.html?audit=YYYY-MM-DD#apparatus`
 to reproduce the apparatus at a fixed date, or export its JSON revision manifest
 directly from the page.
 
