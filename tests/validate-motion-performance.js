@@ -5,6 +5,7 @@ const script = fs.readFileSync("script.js", "utf8");
 const singularis = fs.readFileSync("singularis.js", "utf8");
 const result = fs.readFileSync("result.js", "utf8");
 const styles = fs.readFileSync("style.css", "utf8");
+const pages = [fs.readFileSync("index.html", "utf8"), fs.readFileSync("result.html", "utf8")];
 const errors = [];
 
 function expect(source, pattern, message) {
@@ -26,6 +27,9 @@ expect(result, /innerWidth\s*<\s*700\s*\?\s*40\s*:\s*33/, "Result animation cade
 const loopBody = singularis.match(/function loop\([\s\S]*?\n  }\n\n  function wave/)?.[0] || "";
 const waveBody = singularis.match(/function wave\([\s\S]*?\n  }\n\n  function lattice/)?.[0] || "";
 if (/const points\s*=\s*\[\]/.test(loopBody + waveBody)) errors.push("Common Singularis paths allocate point arrays every frame.");
+
+const assetVersions = pages.flatMap((page) => [...page.matchAll(/(?:src|href)="[^"]+\?v=([^"]+)"/g)].map((match) => match[1]));
+if (assetVersions.length !== 13 || new Set(assetVersions).size !== 1) errors.push("HTML assets do not share one cache-busting release stamp.");
 
 if (errors.length) {
   console.error(errors.join("\n"));

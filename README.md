@@ -29,6 +29,7 @@ classical mathematical typesetting.
 - Animation cadence is capped at 30 fps on desktop and 25 fps on narrow screens.
 - Fluid gradients and the Lorenz stroke gradient are cached instead of rebuilt per frame.
 - The Lorenz history uses a circular buffer, avoiding full-array shifts during animation.
+- HTML asset URLs share a release stamp so GitHub Pages cannot mix new scripts with stale styles.
 
 ## Run Locally
 
