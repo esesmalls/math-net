@@ -39,6 +39,10 @@
   color: var(--red-ink);
   font: italic clamp(20px, 2.4vw, 36px)/1.5 var(--math);
 }
+.result-formula math { display: block; width: 100%; font-family: var(--math); font-size: 1em; font-style: normal; }
+.result-formula mi { font-style: italic; }
+.result-formula mi[mathvariant="normal"] { font-style: normal; letter-spacing: .01em; }
+.result-formula mtext { font: italic .64em var(--serif); color: var(--ink-soft); }
 .result-review-date {
   position: absolute;
   z-index: 3;

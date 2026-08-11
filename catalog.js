@@ -40,8 +40,10 @@
     const title = document.createElement("strong");
     title.textContent = item.title;
 
-    const formula = document.createElement("em");
-    formula.textContent = item.formula;
+    const formula = document.createElement("span");
+    formula.className = "catalog-result-formula";
+    if (window.MATH_TYPES) window.MATH_TYPES.renderFormula(formula, item.formula, { display: "inline", label: item.formula });
+    else formula.textContent = item.formula;
 
     const verification = document.createElement("small");
     const hasDirectPrimary = item.sources.some((source) => directSourceTypes.has(source.type));

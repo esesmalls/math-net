@@ -379,7 +379,9 @@ main, footer { position: relative; z-index: 2; }
 .catalog-result:hover, .catalog-result:focus-visible { position: relative; z-index: 2; outline: 1px solid var(--red-ink); background: rgba(236,220,184,.9); box-shadow: 5px 9px 28px rgba(62,39,18,.14); transform: translateY(-5px) rotate(0); }
 .catalog-result-meta { color: var(--red-ink); font: 8px/1.5 var(--mono); letter-spacing: .08em; }
 .catalog-result strong { margin: 2.5vh 0 1.5vh; font: italic clamp(16px, 1.25vw, 21px)/1.25 var(--serif); }
-.catalog-result em { margin-top: auto; color: var(--ink-soft); font: italic 13px/1.45 var(--math); overflow-wrap: anywhere; }
+.catalog-result-formula { margin-top: auto; color: var(--ink-soft); font: 13px/1.45 var(--math); overflow-wrap: anywhere; }
+.catalog-result-formula math { display: inline; font-family: var(--math); font-size: 1em; }
+.catalog-result-formula mtext { font: italic .82em var(--serif); }
 .catalog-result small { margin-top: 2vh; padding-top: 8px; border-top: 1px solid rgba(65,44,23,.13); font: 7px/1.5 var(--mono); letter-spacing: .05em; opacity: .68; }
 .catalog-result[data-provenance="direct"] small::before { content: "∎ "; color: var(--red-ink); }
 .catalog-domain-axis { position: relative; display: grid; place-content: center; gap: 8px; text-align: center; border-inline: 1px solid rgba(61,42,22,.13); background: rgba(188,162,108,.1); }

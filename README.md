@@ -17,6 +17,7 @@ classical mathematical typesetting.
 - Six result portals per field: three recent breakthroughs and three historical results
 - Paired animated field operators: each entrance has a mathematically inverse return operator
 - Shareable data-driven result folios with theorem statements, proof routes and sources
+- Semantic MathML rendering for all core formulas, with accessible text labels
 - A dedicated `Singularis` animation for every result, shown by default with `Systema` available for comparison
 - Local-only PDF submission and review Archivum backed by IndexedDB
 - Zero dependencies and no build step
@@ -47,6 +48,7 @@ partial verification never silently changes the review date of all 36 folios.
 ```bash
 node tests/validate-results.js
 node tests/validate-catalog.js
+node tests/validate-mathml.js
 node tests/audit-catalog.js 2026-08-11
 ```
 
