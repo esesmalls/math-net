@@ -2,6 +2,19 @@
   "use strict";
 
   const reviewed = "2026-06-11";
+  const maintenance = {
+    schemaVersion: 2,
+    corpusReviewed: reviewed,
+    reviewCadenceDays: 90,
+    sourcePriority: ["primary-paper", "journal-or-institution", "reference"],
+    checkpoints: [
+      {
+        date: "2026-08-11",
+        scope: "priority preprint provenance: Telescope, Kervaire and 3D Kakeya",
+        slugs: ["telescope-conjecture-counterexamples", "last-kervaire-invariant", "three-dimensional-kakeya"]
+      }
+    ]
+  };
   const domains = {
     topology: {
       name: "Topology",
@@ -83,7 +96,7 @@
       "The result changes the organization of stable homotopy theory by proving that telescopic approximation misses genuinely chromatic information.",
       [source("Original preprint", "https://arxiv.org/abs/2310.17459", "preprint"), source("Clay Research Conference background", "https://www.claymath.org/events/2024-clay-research-conference/", "institution")],
       { motif: "chromatic", density: 7 }),
-    result("topology", "recent", "last-kervaire-invariant", "The Last Kervaire Invariant Problem", "De invariantia Kervaire ultima", "Guozhen Wang, Zhouli Xu and collaborators", "2024", "preprint",
+    result("topology", "recent", "last-kervaire-invariant", "The Last Kervaire Invariant Problem", "De invariantia Kervaire ultima", "Weinan Lin, Guozhen Wang, Zhouli Xu", "2024", "preprint",
       "There exists a framed manifold of Kervaire invariant one in dimension 126, settling the final open dimension allowed by the Hill–Hopkins–Ravenel theorem.",
       "θ₆: candidate element in π¹²⁶ˢ; KI: Kervaire invariant.",
       "θ₆ ∈ π¹²⁶ˢ  and  KI(θ₆) = 1",
@@ -326,7 +339,7 @@
       "dim_H(K) = dim_M(K) = 3",
       ["Decompose tubes across multiple scales.", "Control broad and narrow configurations with polynomial partitioning.", "Use sticky-tube and incidence estimates to eliminate lower-dimensional concentration."],
       "The result resolves the first genuinely high-dimensional Kakeya conjecture and advances the restriction program.",
-      [source("Original preprint", "https://arxiv.org/abs/2502.17655", "preprint"), source("Clay research news", "https://www.claymath.org/news/", "institution")],
+      [source("Original preprint", "https://arxiv.org/abs/2502.17655", "preprint"), source("Bourbaki survey by Larry Guth", "https://arxiv.org/abs/2604.03416", "authoritative-survey"), source("Clay research news", "https://www.claymath.org/news/", "institution")],
       { motif: "kakeya", density: 12, custom: true }),
     result("harmonic", "recent", "furstenberg-set-conjecture", "The Planar Furstenberg Set Conjecture", "De lineis Furstenberg", "Kevin Ren, Hong Wang", "2023", "preprint",
       "A planar (s,t)-Furstenberg set has Hausdorff dimension at least min{s+t,(3s+t)/2,s+1}.",
@@ -370,8 +383,18 @@
       { motif: "uncertainty", density: 8 })
   ];
 
+  const sourceChecks = {
+    "telescope-conjecture-counterexamples": "2026-08-11",
+    "last-kervaire-invariant": "2026-08-11",
+    "three-dimensional-kakeya": "2026-08-11"
+  };
+  results.forEach((item) => {
+    item.sourceChecked = sourceChecks[item.slug] || reviewed;
+  });
+
   window.MATH_NET = {
     reviewed,
+    maintenance,
     domains,
     results,
     bySlug: Object.fromEntries(results.map((item) => [item.slug, item])),

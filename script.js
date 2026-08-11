@@ -38,7 +38,7 @@ function scheduleCursor() {
 scheduleCursor();
 
 if (cursor && finePointer && !prefersReducedMotion) {
-  $$("a, .field-card, .note-paper").forEach((element) => {
+  $$("a, button, .field-card, .note-paper").forEach((element) => {
     element.addEventListener("pointerenter", () => cursor.classList.add("active"));
     element.addEventListener("pointerleave", () => cursor.classList.remove("active"));
   });

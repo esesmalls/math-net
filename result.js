@@ -30,6 +30,8 @@
   setText("#result-latin", result.latinTitle);
   setText("#result-title", result.title);
   setText("#result-meta", `${result.authors} · ${result.year} · ${result.status.toUpperCase()}`);
+  setText("#result-reviewed", result.reviewed);
+  setText("#result-source-checked", result.sourceChecked || result.reviewed);
   setText("#result-formula", result.formula);
   setText("#result-theorem", result.theorem);
   setText("#result-symbols", result.symbols);

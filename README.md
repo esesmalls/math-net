@@ -38,10 +38,18 @@ opened through `file://`. Use localhost or GitHub Pages for IndexedDB storage.
 
 Research results live in `results-data.js`. Each result has a stable slug used
 by `result.html?slug=<slug>`. The current research review date is
-`2026-06-11`.
+`2026-06-11`. Individual source rechecks are recorded separately in
+`sourceChecked`; catalog-wide audit checkpoints live in `maintenance`, so a
+partial verification never silently changes the review date of all 36 folios.
 
 ## Validation
 
 ```bash
 node tests/validate-results.js
+node tests/validate-catalog.js
+node tests/audit-catalog.js 2026-08-11
 ```
+
+Pass a review date to the catalog audit for reproducible output. Add `--strict`
+when an automated check should fail once any source review exceeds the configured
+90-day cadence.

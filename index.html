@@ -29,6 +29,7 @@
     <nav>
       <a href="#axiom">AXIOMA</a>
       <a href="#fields">STUDIA</a>
+      <a href="#catalog">TABULA</a>
       <a href="#notes">FOLIA</a>
     </nav>
     <div class="nav-index"><span>INDEX</span><b>0.001</b></div>
@@ -169,6 +170,36 @@
       <aside class="proof-note">The line remembers<br>every circle that<br>conspired to draw it.</aside>
     </section>
 
+    <section class="catalog" id="catalog" aria-labelledby="catalog-title">
+      <div class="section-label catalog-label">
+        <span>03</span>
+        <p>TABULA RESULTORUM<br>INDEX PROBATIONUM</p>
+      </div>
+      <header class="catalog-head">
+        <div>
+          <p class="catalog-kicker">Genealogia idearum</p>
+          <h2 id="catalog-title">A living index<br>of results</h2>
+        </div>
+        <div class="catalog-preface">
+          <p>Thirty-six theorem folios arranged as a double manuscript: inherited results to the left, present research to the right.</p>
+          <div class="catalog-audit" id="catalog-audit" aria-live="polite"></div>
+        </div>
+      </header>
+      <div class="catalog-controls" aria-label="Filter result index">
+        <div class="catalog-filter" id="catalog-domain-filter" role="group" aria-label="Filter by mathematical field"></div>
+        <div class="catalog-filter catalog-era-filter" id="catalog-era-filter" role="group" aria-label="Filter by era"></div>
+      </div>
+      <div class="catalog-ruler" aria-hidden="true">
+        <span>ANTIQUA</span><i></i><b>THEOREMA</b><i></i><span>RECENTIA</span>
+      </div>
+      <div class="catalog-ledger" id="catalog-ledger"></div>
+      <aside class="catalog-method">
+        <span>REGULA FONTIUM · II</span>
+        <p>Primary paper → journal or institution → reference. Preprints remain visibly marked until publication is verified.</p>
+        <p id="catalog-checkpoint"></p>
+      </aside>
+    </section>
+
     <section class="interlude">
       <div class="marquee" aria-hidden="true">
         <div>ORDER · CHAOS · PROOF · DOUBT · INFINITY · ORDER · CHAOS · PROOF · DOUBT · INFINITY ·&nbsp;</div>
@@ -186,7 +217,7 @@
 
     <section class="notes" id="notes">
       <div class="section-label">
-        <span>03</span>
+        <span>04</span>
         <p>FOLIA RECENTIA<br>UNFINISHED NOTES</p>
       </div>
       <div class="notes-content">
@@ -282,6 +313,7 @@
   </footer>
 
   <script src="results-data.js"></script>
+  <script src="catalog.js"></script>
   <script src="script.js"></script>
   <script src="portals.js"></script>
   <script src="submissions.js"></script>
