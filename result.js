@@ -91,6 +91,58 @@
     sourceList.appendChild(link);
   });
 
+  function renderBibliotheca() {
+    const library = window.MATH_BIBLIOTHECA;
+    const record = library && library.recordFor(result);
+    if (!record) {
+      $("#bibliotheca-card").hidden = true;
+      return;
+    }
+
+    const metadata = $("#bibliotheca-meta");
+    const canonical = library.canonicalUrl(record);
+    const link = $("#bibliotheca-link");
+    const identity = record.publication
+      ? `DOI ${record.publication.doi}`
+      : record.arxiv
+        ? `ARXIV ${record.arxiv.id}v${record.arxiv.version}`
+        : "HISTORICAL REFERENCE";
+    const edition = record.publication
+      ? [record.publication.venue, record.publication.volume && `VOL. ${record.publication.volume}`, record.publication.issue && `NO. ${record.publication.issue}`, record.publication.pages && `PP. ${record.publication.pages}`].filter(Boolean).join(" · ")
+      : record.arxiv
+        ? `SUBMITTED ${record.arxiv.submitted} · RECORD UPDATED ${record.arxiv.updated}`
+        : `REFERENCE YEAR ${record.issued || "SINE ANNO"}`;
+
+    setText("#bibliotheca-title", record.title);
+    setText("#bibliotheca-authors", record.authors.join(" · "));
+    metadata.append(
+      makeElement("dt", "", "ACCESSION"), makeElement("dd", "", identity),
+      makeElement("dt", "", "EDITION"), makeElement("dd", "", edition),
+      makeElement("dt", "", "CORPUS CHECK"), makeElement("dd", "", library.reviewed)
+    );
+    link.href = canonical;
+    link.textContent = record.publication ? "DOI APERIRE ↗" : record.arxiv ? "ARXIV APERIRE ↗" : "REFERENCE APERIRE ↗";
+    if (!canonical) link.hidden = true;
+
+    function downloadCitation(format) {
+      const isBibTeX = format === "bibtex";
+      const content = isBibTeX ? library.toBibTeX(record) : `${JSON.stringify(library.toCSL(record), null, 2)}\n`;
+      const blob = new Blob([content], { type: isBibTeX ? "application/x-bibtex;charset=utf-8" : "application/vnd.citationstyles.csl+json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `${result.slug}.${isBibTeX ? "bib" : "json"}`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      setText("#citation-status", `${isBibTeX ? "BIBTEX" : "CSL JSON"} EXSCRIPTUM`);
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    }
+
+    $("#citation-bibtex").addEventListener("click", () => downloadCitation("bibtex"));
+    $("#citation-csl").addEventListener("click", () => downloadCitation("csl"));
+  }
+
   function renderConstellation() {
     const domainResults = window.MATH_NET.byDomain[result.domain];
     const edges = window.MATH_NET.constellations[result.domain];
@@ -200,6 +252,7 @@
     });
   }
 
+  renderBibliotheca();
   renderConstellation();
   renderRevisionTrail();
 

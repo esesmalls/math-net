@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#cbb98e">
   <title>Codex Infinitum · Result Folio</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="style.css?v=20260811.8">
-  <link rel="stylesheet" href="result.css?v=20260811.8">
+  <link rel="stylesheet" href="style.css?v=20260812.1">
+  <link rel="stylesheet" href="result.css?v=20260812.1">
 </head>
 <body class="result-body">
   <div class="grain" aria-hidden="true"></div>
@@ -74,6 +74,21 @@
     <section class="result-content" id="sources">
       <div class="result-section-label"><span>IV</span><p>FONTES<br>TRACEABLE SOURCES</p></div>
       <div class="source-apparatus">
+        <article id="bibliotheca-card" class="bibliotheca-card" aria-labelledby="bibliotheca-title">
+          <div class="bibliotheca-seal" aria-hidden="true"><span>ℬ</span><i>id</i></div>
+          <div class="bibliotheca-copy">
+            <p class="bibliotheca-kicker">BIBLIOTHECA · IDENTITAS CANONICA</p>
+            <h2 id="bibliotheca-title">Canonical work identity</h2>
+            <p id="bibliotheca-authors" class="bibliotheca-authors"></p>
+            <dl id="bibliotheca-meta" class="bibliotheca-meta"></dl>
+            <div class="bibliotheca-actions">
+              <a id="bibliotheca-link" target="_blank" rel="noopener noreferrer">APERIRE ↗</a>
+              <button id="citation-bibtex" type="button">BIBTEX ↓</button>
+              <button id="citation-csl" type="button">CSL JSON ↓</button>
+              <span id="citation-status" role="status" aria-live="polite"></span>
+            </div>
+          </div>
+        </article>
         <div class="source-legend" aria-label="Source authority scale">
           <span><b>I</b> TEXTUS PRIMARIUS</span>
           <span><b>II</b> CONTEXTUS AUCTORITATIS</span>
@@ -127,10 +142,11 @@
     <div class="footer-meta"><a id="footer-back" href="index.html#fields">INVERSE PASSAGE</a><span>© MMXXVI</span></div>
   </footer>
 
-  <script src="results-data.js?v=20260811.8"></script>
-  <script src="maintenance.js?v=20260811.8"></script>
-  <script src="singularis.js?v=20260811.8"></script>
-  <script src="mathml.js?v=20260811.8"></script>
-  <script src="result.js?v=20260811.8"></script>
+  <script src="results-data.js?v=20260812.1"></script>
+  <script src="maintenance.js?v=20260812.1"></script>
+  <script src="bibliotheca.js?v=20260812.1"></script>
+  <script src="singularis.js?v=20260812.1"></script>
+  <script src="mathml.js?v=20260812.1"></script>
+  <script src="result.js?v=20260812.1"></script>
 </body>
 </html>

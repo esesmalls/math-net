@@ -106,6 +106,70 @@
   font: italic 40px var(--math);
 }
 .source-apparatus { width: min(950px, 100%); }
+.bibliotheca-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(130px, 18%) 1fr;
+  gap: clamp(24px, 4vw, 54px);
+  margin: 0 0 38px;
+  padding: clamp(28px, 4vw, 52px);
+  overflow: hidden;
+  border: 1px solid rgba(55,42,25,.3);
+  background:
+    linear-gradient(90deg, transparent 0 12%, rgba(124,52,36,.15) 12.1%, transparent 12.25%),
+    repeating-linear-gradient(0deg, transparent 0 30px, rgba(55,42,25,.065) 30px 31px),
+    rgba(233,218,180,.72);
+  box-shadow: 8px 12px 34px rgba(65,43,20,.1), inset 0 0 50px rgba(91,61,27,.05);
+}
+.bibliotheca-card::after {
+  content: "CATALOGUS";
+  position: absolute;
+  right: -23px;
+  top: 34px;
+  color: rgba(124,52,36,.18);
+  font: 7px var(--mono);
+  letter-spacing: .22em;
+  transform: rotate(90deg);
+}
+.bibliotheca-seal {
+  position: relative;
+  align-self: start;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(55,42,25,.36);
+  border-radius: 50%;
+  color: var(--red-ink);
+}
+.bibliotheca-seal::before,
+.bibliotheca-seal::after { content: ""; position: absolute; border-radius: 50%; }
+.bibliotheca-seal::before { inset: 11px; border: 1px dashed rgba(55,42,25,.3); }
+.bibliotheca-seal::after { inset: 24px; border: 1px solid rgba(124,52,36,.2); }
+.bibliotheca-seal span { font: italic clamp(48px, 7vw, 86px)/1 var(--math); }
+.bibliotheca-seal i { position: absolute; right: 8%; bottom: 12%; color: var(--ink-soft); font: italic 12px var(--serif); }
+.bibliotheca-copy { min-width: 0; }
+.bibliotheca-kicker { margin: 0 0 13px; color: var(--red-ink); font: 8px var(--mono); letter-spacing: .17em; }
+.bibliotheca-copy h2 { max-width: 780px; margin: 0; font: italic clamp(30px, 4vw, 54px)/1.05 var(--serif); font-weight: 400; }
+.bibliotheca-authors { margin: 19px 0 28px; color: var(--ink-soft); font: italic 14px/1.7 var(--serif); }
+.bibliotheca-meta { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 8px 22px; margin: 0; }
+.bibliotheca-meta dt { color: var(--red-ink); font: 7px/1.6 var(--mono); letter-spacing: .12em; }
+.bibliotheca-meta dd { margin: 0; font: 9px/1.6 var(--mono); letter-spacing: .06em; overflow-wrap: anywhere; }
+.bibliotheca-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 30px; }
+.bibliotheca-actions a,
+.bibliotheca-actions button {
+  padding: 9px 12px;
+  border: 1px solid rgba(55,42,25,.32);
+  background: rgba(218,199,155,.48);
+  color: var(--ink);
+  font: 7px var(--mono);
+  letter-spacing: .12em;
+  cursor: pointer;
+}
+.bibliotheca-actions a:hover,
+.bibliotheca-actions button:hover,
+.bibliotheca-actions a:focus-visible,
+.bibliotheca-actions button:focus-visible { background: var(--red-ink); color: var(--paper-light); }
+#citation-status { min-width: 110px; color: var(--red-ink); font: italic 10px var(--serif); }
 .source-legend {
   display: flex;
   flex-wrap: wrap;
@@ -301,6 +365,10 @@ a.lineage-node:focus-visible { transform: translate(-50%, -50%) rotate(0deg) sca
   .result-review-date { right: 7vw; bottom: 4vh; font-size: 9px; }
   .result-content { grid-template-columns: 1fr; padding: 10vh 6vw; }
   .source-list { grid-template-columns: 1fr; }
+  .bibliotheca-card { grid-template-columns: 1fr; }
+  .bibliotheca-seal { width: 120px; }
+  .bibliotheca-meta { grid-template-columns: 1fr; gap: 4px; }
+  .bibliotheca-meta dd { margin-bottom: 10px; }
   .source-legend { display: grid; gap: 5px; }
   .result-paper p { font-size: 14px; }
   .proof-route li { padding: 75px 24px 25px; font-size: 14px; }

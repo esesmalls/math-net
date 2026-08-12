@@ -14,7 +14,7 @@ const required = ["slug", "domain", "era", "title", "latinTitle", "authors", "ye
 if (results.length !== 36) errors.push(`Expected 36 results, found ${results.length}.`);
 if (Object.keys(bySlug).length !== 36) errors.push("Slugs are not unique.");
 if (reviewed !== "2026-06-11") errors.push(`Unexpected review date: ${reviewed}.`);
-if (!maintenance || maintenance.schemaVersion !== 4) errors.push("Missing catalog maintenance schema v4.");
+if (!maintenance || maintenance.schemaVersion !== 5) errors.push("Missing catalog maintenance schema v5.");
 if (!maintenance || !Array.isArray(maintenance.checkpoints) || !maintenance.checkpoints.length) errors.push("Missing source-review checkpoints.");
 if (maintenance && maintenance.corpusReviewed !== reviewed) errors.push("Maintenance corpus date and result corpus date differ.");
 if (!maintenance || !maintenance.reviewCadenceByStatus || maintenance.reviewCadenceByStatus.preprint !== 45) errors.push("Missing status-aware review cadence.");
@@ -59,7 +59,10 @@ for (const item of results) {
   }
   if (item.sources.some((entry) => entry.type === "primary-index")) errors.push(`${item.slug} still uses a search-index source placeholder.`);
   if (item.era === "recent" && !item.sources.some((entry) => ["preprint", "primary", "journal"].includes(entry.type))) errors.push(`${item.slug} lacks a direct primary-paper link.`);
-  if (item.era === "recent" && item.sourceChecked !== "2026-08-11") errors.push(`${item.slug} was not covered by the latest recent-results audit.`);
+  if (item.era === "recent") {
+    const newestCheckpoint = maintenance.checkpoints.find((checkpoint) => checkpoint.slugs.includes(item.slug));
+    if (!newestCheckpoint || item.sourceChecked !== newestCheckpoint.date) errors.push(`${item.slug} does not match its newest source-review checkpoint.`);
+  }
   if (item.status === "published" && !item.sources.some((entry) => ["journal", "conference"].includes(entry.type))) errors.push(`${item.slug} is marked published without a formal publication record.`);
   if (!item.visual || typeof singularis[item.visual.motif] !== "function") errors.push(`${item.slug} has no Singularis drawer.`);
 }
@@ -82,9 +85,11 @@ for (const checkpoint of maintenance.checkpoints || []) {
   if ((checkpoint.slugs || []).some((slug) => !reviewSlugs.has(slug)) || reviewSlugs.size !== (checkpoint.slugs || []).length) errors.push(`Checkpoint review ledger does not match its declared scope: ${checkpoint.date}.`);
 }
 if (!(maintenance.checkpoints || []).some((checkpoint) => checkpoint.slugs.includes("furstenberg-set-conjecture"))) errors.push("Furstenberg status recheck is missing from the maintenance ledger.");
-if ((maintenance.checkpoints[0].evidence || []).length !== 11) errors.push("Latest maintenance checkpoint should retain eleven status-review notes.");
-if ((maintenance.checkpoints[0].reviews || []).length !== 18) errors.push("Latest maintenance checkpoint should cover all eighteen recent results.");
+if ((maintenance.checkpoints[0].evidence || []).length !== 3) errors.push("Latest maintenance checkpoint should retain three canonical-identity notes.");
+if ((maintenance.checkpoints[0].reviews || []).length !== 3) errors.push("Latest maintenance checkpoint should cover three corrected publication records.");
 if (bySlug["sle4-removability"].status !== "preprint" || bySlug["union-closed-lower-bound"].status !== "preprint") errors.push("Unsupported publication labels remain in the recent catalog.");
+if (bySlug["non-simple-sle-removability"].status !== "published" || bySlug["positive-mass-stability"].status !== "published") errors.push("New Inventiones publication records are not reflected in the catalog.");
+if (!bySlug["lqg-metric-uniqueness"].sources.some((entry) => entry.url.includes("10.1112/plms.12492")) || bySlug["lqg-metric-uniqueness"].sources.some((entry) => entry.url.includes("10.2140/pmp"))) errors.push("LQG canonical DOI correction is incomplete.");
 if (!bySlug["kelley-meka-roth"].sources.some((entry) => entry.url.includes("2302.05537")) || !bySlug["kelley-meka-roth"].formula.includes("¹⁄¹²")) errors.push("Kelley-Meka primary paper or corrected exponent is missing.");
 
 const mockContext = new Proxy({

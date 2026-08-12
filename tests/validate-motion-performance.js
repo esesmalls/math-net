@@ -29,7 +29,7 @@ const waveBody = singularis.match(/function wave\([\s\S]*?\n  }\n\n  function la
 if (/const points\s*=\s*\[\]/.test(loopBody + waveBody)) errors.push("Common Singularis paths allocate point arrays every frame.");
 
 const assetVersions = pages.flatMap((page) => [...page.matchAll(/(?:src|href)="[^"]+\?v=([^"]+)"/g)].map((match) => match[1]));
-if (assetVersions.length !== 15 || new Set(assetVersions).size !== 1) errors.push("HTML assets do not share one cache-busting release stamp.");
+if (assetVersions.length !== 17 || new Set(assetVersions).size !== 1) errors.push("HTML assets do not share one cache-busting release stamp.");
 
 if (errors.length) {
   console.error(errors.join("\n"));

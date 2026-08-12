@@ -33,6 +33,7 @@ const dataContext = { window: {} };
 vm.createContext(dataContext);
 vm.runInContext(fs.readFileSync("results-data.js", "utf8"), dataContext);
 vm.runInContext(fs.readFileSync("maintenance.js", "utf8"), dataContext);
+vm.runInContext(fs.readFileSync("bibliotheca.js", "utf8"), dataContext);
 
 const nodes = Object.fromEntries([
   "#catalog-ledger", "#catalog-domain-filter", "#catalog-era-filter", "#catalog-audit", "#catalog-checkpoint",
@@ -64,6 +65,7 @@ if (domainFilter.children.length !== 7) errors.push("Catalog field filter is inc
 if (eraFilter.children.length !== 3) errors.push("Catalog era filter is incomplete.");
 if (!nodes["#catalog-audit"].textContent.includes("36 FOLIOS")) errors.push("Catalog audit summary is missing.");
 if (!nodes["#catalog-audit"].textContent.includes("18 DIRECT PAPERS")) errors.push("Catalog direct-paper count is incorrect.");
+if (!nodes["#catalog-audit"].textContent.includes("18 CANONICAL IDENTITIES")) errors.push("Catalog canonical-identity count is incorrect.");
 if (!nodes["#catalog-audit"].textContent.includes("0 SEARCH PLACEHOLDERS")) errors.push("Catalog still reports search placeholders.");
 if (descendants(ledger, "A").filter((node) => node.dataset.provenance === "direct").length < 18) errors.push("Direct-paper provenance marks are incomplete.");
 if (descendants(ledger, "A").filter((node) => node.dataset.review === "current").length !== 36) errors.push("Catalog review state does not cover all folios.");

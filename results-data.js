@@ -3,7 +3,7 @@
 
   const reviewed = "2026-06-11";
   const maintenance = {
-    schemaVersion: 4,
+    schemaVersion: 5,
     corpusReviewed: reviewed,
     reviewCadenceDays: 90,
     reviewCadenceByStatus: {
@@ -18,6 +18,45 @@
     queueSize: 12,
     sourcePriority: ["primary-paper", "journal-or-institution", "reference"],
     checkpoints: [
+      {
+        date: "2026-08-12",
+        scope: "canonical identity reconciliation for three published works; one incorrect DOI retired; two publication states advanced",
+        slugs: ["lqg-metric-uniqueness", "non-simple-sle-removability", "positive-mass-stability"],
+        evidence: [
+          {
+            slug: "lqg-metric-uniqueness",
+            url: "https://doi.org/10.1112/plms.12492",
+            outcome: "The Proceedings of the London Mathematical Society record replaces an unrelated DOI and fixes the publication year and pagination."
+          },
+          {
+            slug: "non-simple-sle-removability",
+            url: "https://doi.org/10.1007/s00222-026-01427-3",
+            outcome: "The accepted manuscript now has a canonical Inventiones Mathematicae publication record."
+          },
+          {
+            slug: "positive-mass-stability",
+            url: "https://doi.org/10.1007/s00222-024-01302-z",
+            outcome: "The forthcoming note was replaced by the final Inventiones Mathematicae volume, issue and page record."
+          }
+        ],
+        reviews: [
+          {
+            slug: "lqg-metric-uniqueness",
+            outcome: "Incorrect DOI retired; canonical PLMS publication identity and dates restored.",
+            changedFields: ["year", "sources", "sourceChecked"]
+          },
+          {
+            slug: "non-simple-sle-removability",
+            outcome: "Publication status advanced from accepted preprint to published and the journal DOI was added.",
+            changedFields: ["status", "sources", "sourceChecked"]
+          },
+          {
+            slug: "positive-mass-stability",
+            outcome: "Publication status advanced from accepted preprint to published and the final journal record was added.",
+            changedFields: ["year", "status", "sources", "sourceChecked"]
+          }
+        ]
+      },
       {
         date: "2026-08-11",
         scope: "eighteen direct-paper and publication-status checks; seven search-index placeholders retired; one mismatched paper corrected",
@@ -52,7 +91,7 @@
           },
           {
             slug: "symmetric-power-functoriality",
-            url: "https://annals.math.princeton.edu/2026/203-1/p04",
+            url: "https://doi.org/10.4007/annals.2026.203.1.4",
             outcome: "Annals volume 203 records publication in 2026; the theorem statement was expanded from the rational case to regular-weight Hilbert modular forms over totally real fields"
           },
           {
@@ -77,7 +116,7 @@
           },
           {
             slug: "erdos-faber-lovasz",
-            url: "https://annals.math.princeton.edu/2023/198-2/p02",
+            url: "https://doi.org/10.4007/annals.2023.198.2.2",
             outcome: "The Annals publication record and DOI were added"
           },
           {
@@ -360,7 +399,7 @@
       "π on GL₂(𝔸_F)  ⇒  Symⁿπ automorphic on GLₙ₊₁(𝔸_F),  n ≥ 1",
       ["Construct congruences between automorphic representations.", "Use automorphy lifting theorems for Galois representations.", "Propagate automorphy through symmetric powers."],
       "The theorem establishes a major case of Langlands functoriality and has consequences for Sato–Tate phenomena.",
-      [source("Original preprint", "https://arxiv.org/abs/2212.03595", "preprint"), source("Annals of Mathematics publication", "https://annals.math.princeton.edu/2026/203-1/p04", "journal"), source("Clay Research Award", "https://www.claymath.org/news/2024-clay-research-award/", "institution")],
+      [source("Original preprint", "https://arxiv.org/abs/2212.03595", "preprint"), source("Annals of Mathematics publication", "https://doi.org/10.4007/annals.2026.203.1.4", "journal"), source("Clay Research Award", "https://www.claymath.org/news/2024-clay-research-award/", "institution")],
       { motif: "langlands", density: 8 }),
     result("number", "recent", "unbounded-denominators", "Unbounded Denominators Conjecture", "De denominatoribus infinitis", "Frank Calegari, Vesselin Dimitrov, Yunqing Tang", "2021 / 2025", "published",
       "A holomorphic modular form for a finite-index subgroup of SL₂(ℤ) whose Fourier coefficients have bounded denominators is modular for a congruence subgroup.",
@@ -403,13 +442,13 @@
       [source("Annals of Mathematics paper", "https://annals.math.princeton.edu/1995/141-3/p01", "primary")],
       { motif: "frey", density: 6 }),
 
-    result("complex", "recent", "lqg-metric-uniqueness", "Critical and Supercritical LQG Metric Uniqueness", "De metrica quantica", "Jian Ding, Ewain Gwynne", "2024", "published",
+    result("complex", "recent", "lqg-metric-uniqueness", "Critical and Supercritical LQG Metric Uniqueness", "De metrica quantica", "Jian Ding, Ewain Gwynne", "2021 / 2023", "published",
       "For each matter central charge c_M in [1,25), the critical or supercritical Liouville quantum gravity metric is uniquely determined, up to deterministic scale, by its natural axioms.",
       "c_M: matter central charge; h: Gaussian free field; D_h: LQG metric.",
       "c_M ∈ [1,25)  ⇒  D_h is unique up to scale",
       ["Start from subsequential limits of Liouville first-passage percolation.", "Encode locality, translation covariance and Weyl scaling as axioms.", "Compare annular crossing scales to prove that any two weak LQG metrics are deterministic multiples."],
       "Together with earlier subcritical work, this gives a canonical LQG metric throughout the full range c_M < 25.",
-      [source("Original preprint", "https://arxiv.org/abs/2110.00177", "preprint"), source("Published paper", "https://doi.org/10.2140/pmp.2024.5.1", "journal"), source("Fields Institute background", "https://www.fields.utoronto.ca/activities/21-22/LQG", "institution")],
+      [source("Original preprint", "https://arxiv.org/abs/2110.00177", "preprint"), source("Published paper", "https://doi.org/10.1112/plms.12492", "journal"), source("Fields Institute background", "https://www.fields.utoronto.ca/activities/21-22/LQG", "institution")],
       { motif: "random-field", density: 8 }),
     result("complex", "recent", "sle4-removability", "Conformal Removability of SLE₄", "De removabilitate conformi", "Konstantinos Kavvadias, Jason Miller, Lukas Schoug", "2022", "preprint",
       "A chordal SLE₄ curve is almost surely conformally removable.",
@@ -419,13 +458,13 @@
       "The theorem identifies a sharp critical random curve as rigid from the viewpoint of conformal geometry.",
       [source("Original preprint", "https://arxiv.org/abs/2209.10532", "preprint"), source("SLE background", "https://www.ams.org/notices/200706/tx070600647p.pdf", "institution")],
       { motif: "sle", density: 7 }),
-    result("complex", "recent", "non-simple-sle-removability", "Conformal Removability of Non-Simple SLE", "De curvis non simplicibus", "Konstantinos Kavvadias, Jason Miller, Lukas Schoug", "2023 / 2026", "accepted preprint",
+    result("complex", "recent", "non-simple-sle-removability", "Conformal Removability of Non-Simple SLE", "De curvis non simplicibus", "Konstantinos Kavvadias, Jason Miller, Lukas Schoug", "2023 / 2026", "published",
       "Let 𝒦 ⊂ (4,8) be the parameters for which the adjacency graph of complementary components of SLEκ is almost surely connected. For every κ ∈ 𝒦, the SLEκ range is almost surely conformally removable.",
       "η: SLEκ curve; 𝒦: connected-complement-adjacency parameter set.",
       "κ ∈ 𝒦  ⇒  range(SLEκ) is removable a.s.",
       ["Construct the canonical conformally covariant volume measure on cut points.", "Bound the measure of every Borel set quantitatively by its diameter.", "Use connected adjacency of complementary components to propagate conformal compatibility across self-touching points."],
       "The theorem establishes conformal rigidity for a self-intersecting, non-space-filling SLE regime and answers a question of Sheffield.",
-      [source("Accepted preprint", "https://arxiv.org/abs/2302.10857", "preprint"), source("SLE background", "https://www.ams.org/notices/200706/tx070600647p.pdf", "institution")],
+      [source("Original preprint", "https://arxiv.org/abs/2302.10857", "preprint"), source("Published paper", "https://doi.org/10.1007/s00222-026-01427-3", "journal"), source("SLE background", "https://www.ams.org/notices/200706/tx070600647p.pdf", "institution")],
       { motif: "branch", density: 8 }),
     result("complex", "historic", "cauchy-integral-formula", "Cauchy Integral Formula", "Formula integralis Cauchy", "Augustin-Louis Cauchy", "1831", "classical",
       "A holomorphic function inside a contour is completely determined by its values on the contour.",
@@ -468,13 +507,13 @@
       "These first compact Bonnet pairs resolve longstanding smooth and real-analytic uniqueness questions for immersed surfaces.",
       [source("Original preprint", "https://arxiv.org/abs/2110.06335", "preprint"), source("Published paper", "https://doi.org/10.1007/s10240-025-00159-z", "journal"), source("TUM research background", "https://www.tum.de/aktuelles/alle-meldungen/pressemitteilungen/details/jahrzehnte-altes-problem-der-klassischen-geometrie-geloest", "institution")],
       { motif: "bonnet", density: 6 }),
-    result("geometry", "recent", "positive-mass-stability", "Stability of Euclidean 3-Space for the Positive Mass Theorem", "De stabilitate massae positivae", "Conghan Dong, Antoine Song", "2023 / 2024", "accepted preprint",
+    result("geometry", "recent", "positive-mass-stability", "Stability of Euclidean 3-Space for the Positive Mass Theorem", "De stabilitate massae positivae", "Conghan Dong, Antoine Song", "2023 / 2025", "published",
       "Let (M_i,g_i) be complete asymptotically flat 3-manifolds with nonnegative scalar curvature and ADM mass of one end tending to zero. After removing sets Z_i with boundary area tending to zero, the remaining manifolds converge to Euclidean 3-space in pointed measured Gromov–Hausdorff topology.",
       "m_ADM: ADM mass; Z_i: discarded region; pmGH: pointed measured Gromov–Hausdorff convergence.",
       "m_ADM(g_i)→0 ⇒ |∂Z_i|→0 and M_i\\Z_i →pmGH ℝ³",
       ["Use minimal-surface and scalar-curvature estimates to control the chosen end.", "Excise exceptional regions Z_i while proving that their boundary areas vanish.", "Establish measured compactness and identify the unique pointed limit as Euclidean 3-space."],
       "The theorem confirms the Huisken–Ilmanen stability conjecture and also yields Bartnik's strict positivity conjecture.",
-      [source("Accepted preprint", "https://arxiv.org/abs/2302.07414", "preprint"), source("Simons Collaboration background", "https://simonscollab.icerm.brown.edu/", "institution")],
+      [source("Original preprint", "https://arxiv.org/abs/2302.07414", "preprint"), source("Published paper", "https://doi.org/10.1007/s00222-024-01302-z", "journal"), source("Simons Collaboration background", "https://simonscollab.icerm.brown.edu/", "institution")],
       { motif: "mass", density: 7 }),
     result("geometry", "historic", "theorema-egregium", "Theorema Egregium", "Theorema Egregium", "Carl Friedrich Gauss", "1827", "classical",
       "The Gaussian curvature of a surface is determined entirely by its intrinsic metric.",
@@ -515,7 +554,7 @@
       "χ′(H) ≤ n  for sufficiently large EFL systems",
       ["Decompose the hypergraph by degree scale.", "Use randomized nibble coloring for the sparse bulk.", "Absorb and color the structured remainder."],
       "The result proves the asymptotic range of a famous 1972 coloring conjecture.",
-      [source("Original preprint", "https://arxiv.org/abs/2101.04698", "preprint"), source("Annals of Mathematics publication", "https://annals.math.princeton.edu/2023/198-2/p02", "journal"), source("AMS combinatorics background", "https://www.ams.org/publicoutreach/feature-column/fcarc-coloring", "institution")],
+      [source("Original preprint", "https://arxiv.org/abs/2101.04698", "preprint"), source("Annals of Mathematics publication", "https://doi.org/10.4007/annals.2023.198.2.2", "journal"), source("AMS combinatorics background", "https://www.ams.org/publicoutreach/feature-column/fcarc-coloring", "institution")],
       { motif: "coloring", density: 8 }),
     result("graph", "recent", "union-closed-lower-bound", "A Constant Lower Bound for Union-Closed Sets", "De familiis unione clausis", "Justin Gilmer", "2022", "preprint",
       "Every nonempty finite union-closed family has an element contained in at least 0.01 of its member sets.",
@@ -607,12 +646,12 @@
     "symmetric-power-functoriality": "2026-08-11",
     "unbounded-denominators": "2026-08-11",
     "kelley-meka-roth": "2026-08-11",
-    "lqg-metric-uniqueness": "2026-08-11",
+    "lqg-metric-uniqueness": "2026-08-12",
     "sle4-removability": "2026-08-11",
-    "non-simple-sle-removability": "2026-08-11",
+    "non-simple-sle-removability": "2026-08-12",
     "multiplicity-one-mean-curvature": "2026-08-11",
     "compact-bonnet-pairs": "2026-08-11",
-    "positive-mass-stability": "2026-08-11",
+    "positive-mass-stability": "2026-08-12",
     "three-dimensional-kakeya": "2026-08-11",
     "furstenberg-set-conjecture": "2026-08-11",
     "restriction-estimates-r3": "2026-08-11",

@@ -112,7 +112,8 @@
   const preprintCount = net.results.filter((item) => item.status.includes("preprint")).length;
   const recentDirectCount = net.results.filter((item) => item.era === "recent" && item.sources.some((source) => directSourceTypes.has(source.type))).length;
   const searchPlaceholderCount = net.results.filter((item) => item.sources.some((source) => source.type === "primary-index")).length;
-  audit.textContent = `${net.results.length} FOLIOS · ${sourceCount} LINKS · ${recentDirectCount} DIRECT PAPERS · ${searchPlaceholderCount} SEARCH PLACEHOLDERS · ${preprintCount} PREPRINT MARKS · CORPUS ${net.reviewed}`;
+  const canonicalCount = window.MATH_BIBLIOTHECA ? Object.keys(window.MATH_BIBLIOTHECA.works).length : 0;
+  audit.textContent = `${net.results.length} FOLIOS · ${sourceCount} LINKS · ${recentDirectCount} DIRECT PAPERS · ${canonicalCount} CANONICAL IDENTITIES · ${searchPlaceholderCount} SEARCH PLACEHOLDERS · ${preprintCount} PREPRINT MARKS · CORPUS ${net.reviewed}`;
 
   const latest = (maintenance.checkpoints || [])[0];
   const cadence = maintenance.reviewCadenceDays || 90;

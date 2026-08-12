@@ -20,6 +20,7 @@ classical mathematical typesetting.
 - A field-specific `Genealogia Theorematum` constellation connecting all six results in each domain
 - Per-result `Codex Revisionis` traces with freshness, cadence, changed fields and status evidence
 - Roman source ranks (`I` primary text, `II` authoritative context, `III` reference) on every result folio
+- A manuscript-style `Bibliotheca` identity card with canonical DOI/arXiv access and BibTeX/CSL JSON export
 - Semantic MathML rendering for all core formulas, with accessible text labels
 - A dedicated `Singularis` animation for every result, shown by default with `Systema` available for comparison
 - A manuscript-style `Apparatus Criticus` with six-domain review rings and an exportable revision queue
@@ -55,8 +56,14 @@ by `result.html?slug=<slug>`. The current research review date is
 `2026-06-11`. Individual source rechecks are recorded separately in
 `sourceChecked`; catalog-wide audit checkpoints live in `maintenance`, so a
 partial verification never silently changes the review date of all 36 folios.
-The latest checkpoint audits all 18 recent results and requires every
-`published` label to carry a journal or conference record.
+The latest full checkpoint audits all 18 recent results and requires every
+`published` label to carry a journal or conference record. Smaller checkpoints
+may supersede individual folios without silently resetting the other review dates.
+
+`bibliotheca.js` is the canonical identity layer for the 18 recent works. It
+stores versioned arXiv snapshots and final DOI, venue, volume, issue and page
+metadata when published. Every result folio can export BibTeX and CSL JSON;
+historical folios derive a stable fallback citation from the corpus record.
 
 `maintenance.js` is the shared editorial clock and revision ledger used by both
 the browser and the CLI audit. Accepted preprints, preprints, published results
@@ -72,9 +79,11 @@ node tests/validate-results.js
 node tests/validate-catalog.js
 node tests/validate-mathml.js
 node tests/validate-maintenance.js
+node tests/validate-bibliotheca.js
 node tests/validate-motion-performance.js
-node tests/audit-catalog.js 2026-08-11
-node tests/audit-catalog.js 2026-08-11 --json
+node tests/audit-catalog.js 2026-08-12
+node tests/audit-catalog.js 2026-08-12 --json
+node tests/audit-bibliotheca.js --strict
 ```
 
 Pass a review date to the catalog audit for reproducible output. Add `--strict`
